@@ -90,7 +90,7 @@ func parseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 		return numReviews + reviewsInt
 	}
 
-	fmt.Println("'" + title + "' is parsing ...", )
+	fmt.Println("'" + title + "' is connecting ...", )
 	// take one
 	switch title {
 		case "flamp": {
@@ -266,6 +266,57 @@ func parseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 
 			state = "It's Parsed Successfully"
 		}
+		// case "yellowpages": {
+		// 	// get All HTML
+		// 	html, err 		:= doc.Html()
+		// 	errorService.Check(err)
+
+		// 	//<div class="result-rating one  "><span class="count">(2)</span>
+	
+		// 	html 		  		= strings.ToLower(html)
+
+		// 	// get/set rate
+		// 	rateText      := ""
+		// 	valExp, err	  := regexp.Compile(`<div class="result-rating\s\w*\b`)
+		// 	errorService.Check(err)
+		// 	listRate  	  := valExp.FindAllString(html, -1)
+
+		// 	fmt.Println("---------listRate------------", listRate)
+
+		// 	if len(listRate) != 0 {
+		// 		rateText = regexp.MustCompile(`<div class="result-rating\\s`).ReplaceAllString(listRate[0], "")
+		// 		sNum	  := ""
+
+		// 		if rateText == "one" {
+		// 			sNum = "1"
+		// 		} else if rateText == "two" {
+		// 			sNum = "2"
+		// 		} else if rateText == "three" {
+		// 			sNum = "3"
+		// 		} else if rateText == "four" {
+		// 			sNum = "4"
+		// 		} else if rateText == "five" {
+		// 			sNum = "5"
+		// 		}
+
+		// 		setSumRate(sNum)
+		// 	}
+
+		// 	// get/set reviews
+		// 	reviewsText   := ""
+		// 	numExp, err	  := regexp.Compile(`\d\.?\d?\)`)
+		// 	errorService.Check(err)
+		// 	listReviews   := numExp.FindAllString(html, -1)
+		// 	if len(listReviews) != 0 {
+		// 		reviewsText    = regexp.MustCompile(`[\\D]*`).ReplaceAllString(listReviews[0], "")
+		// 		numReviews	   = setSumReviews(reviewsText)
+		// 	}
+
+		// 	fmt.Println("-----------rateText----------", rateText)
+		// 	fmt.Println("----------reviewsText-----------", reviewsText)
+
+		// 	state = "It's Parsed Successfully"
+		// }
 	default: {
 			state = "Specified '" + title + "' Service has been not found"
 			break

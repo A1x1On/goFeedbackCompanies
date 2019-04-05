@@ -28,7 +28,7 @@ func Index() {
 		{Title: "yelp"          , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Washington%2C%20DC"   			   	 , ISOCode: "US", CountryCode: 1  },
 		{Title: "tripadvisorus" , Url : "https://www.yellowpages.com/search?search_terms={company}&geo_location_terms=Washington%2C+DC", ISOCode: "US", CountryCode: 1  },
 		{Title: "bbb"           , Url : "https://www.bbb.org/search?find_country=USA&find_text=kfc&page=1"  							       , ISOCode: "US", CountryCode: 1  },
-		{Title: "yellowpages"   , Url : "https://www.yellowpages.com/search?search_terms=kfc&geo_location_terms=Washington%2C+DC"      , ISOCode: "US", CountryCode: 1  },
+		{Title: "yellowpages"   , Url : "https://www.yellowpages.com/search?search_terms={company}&geo_location_terms=Washington%2C+DC", ISOCode: "US", CountryCode: 1  },
 
 		{Title: "tripadvisoreu" , Url : "https://www.tripadvisor.com/Search?geo=4&pid=3826&q=kfc" 		  							          , ISOCode: "EU", CountryCode: 1  },
 		{Title: "pagesjaunes"   , Url : "https://www.pagesjaunes.fr/recherche/berling-57/kfc" 		  							                , ISOCode: "EU", CountryCode: 1  },
