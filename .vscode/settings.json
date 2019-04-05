@@ -1,0 +1,8 @@
+{
+    "editor.useTabStops": false,
+    "[go]": {
+        "editor.formatOnSave": false,
+        "editor.tabSize": 3,
+    }
+
+}
