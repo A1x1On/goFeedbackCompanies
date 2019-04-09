@@ -1,0 +1,44 @@
+2019/04/08 15:25:29 runtime.errorString runtime error: index out of range
+C:/Go/src/runtime/panic.go:44 (0x42c8d2)
+	panicindex: panic(indexError)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:18 (0x631532)
+	Public: fmt.Println(n[3])
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:8 (0x631917)
+	main: public.Public()
+C:/Go/src/runtime/proc.go:200 (0x42f85c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457011)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/08 15:29:00 *errors.errorString Reslut is empty
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/errorService.go:7 (0x665931)
+	(*ErrorService).Check: panic(err)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:119 (0x66bd31)
+	showMsg: errorService.Check(errors.New("Reslut is empty")) //fmt.Println("Enter Company, please: ")
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:55 (0x66a862)
+	Index: showMsg(console, scanner.Text())
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:15 (0x66c112)
+	Public: Index() // start visual
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:8 (0x66c457)
+	main: public.Public()
+C:/Go/src/runtime/proc.go:200 (0x42f85c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457011)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/08 15:31:27 *errors.errorString Reslut is empty
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/errorService.go:7 (0x665931)
+	(*ErrorService).Check: panic(err)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:119 (0x66bd31)
+	showMsg: errorService.Check(errors.New("Reslut is empty")) //fmt.Println("Enter Company, please: ")
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:55 (0x66a862)
+	Index: showMsg(console, scanner.Text())
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:15 (0x66c112)
+	Public: Index() // start visual
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:8 (0x66c507)
+	main: public.Public()
+C:/Go/src/runtime/proc.go:200 (0x42f85c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457011)
+	goexit: BYTE	$0x90	// NOP
+

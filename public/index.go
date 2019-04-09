@@ -6,13 +6,13 @@ import (
 	"gov/backend/interfaces"
 	"gov/backend/models"
 	"gov/backend/services"
+	"gov/backend/common/helpers"
 	"errors"
 	"strings"
 	"os"
 )
 
 var feedbackService interfaces.IFeedbackService = &services.FeedbackService{}
-var errorService    interfaces.IErrorService    = &services.ErrorService{}
 
 func Index() {
 	scanner   := bufio.NewScanner(os.Stdin)
@@ -46,7 +46,7 @@ func Index() {
 		switch scanner.Text() {
 			case "quite" : console.IsQuite = true
 			case "q"	 	 : console.IsQuite = true
-			default	    : gotKey(console, qfeedback, scanner.Text())
+			default	    : execInput(console, qfeedback, scanner.Text()) // pick the appropriate step in the condition blocks
 		}
 	
 		if console.IsQuite {
@@ -56,36 +56,34 @@ func Index() {
 		}
 	}
 
-	errorService.Check(scanner.Err())
+	helpers.CheckError(scanner.Err())
 }
 
-func gotKey(console *models.ConsoleModel, qfeedback *models.FeedbackQueryModel, text string) {
+func execInput(console *models.ConsoleModel, qfeedback *models.FeedbackQueryModel, textKey string) {
 	feedBacks := make([]models.FeedbackModel, 0)
+	textKey    = strings.ToUpper(textKey)
 
-	if (strings.ToUpper(text) == "UA" || strings.ToUpper(text) == "EU" || strings.ToUpper(text) == "US") && console.Step == 1 {
-		qfeedback.ISOCode       = strings.ToUpper(text)
-		services, err          := FilterFServiceByISO(qfeedback.Services, qfeedback)
-		errorService.Check(err)
+	if (textKey== "UA" || textKey == "EU" || textKey == "US") && console.Step == 1 {
+		qfeedback.ISOCode       = textKey
+		services	              := FilterFServiceByISO(qfeedback.Services, qfeedback)
 		qfeedback.Services      = services
 		console.Step            = 2
-	} else if strings.ToUpper(text) == "RU" && console.Step == 1 {
-		qfeedback.ISOCode       = strings.ToUpper(text)
-		services, err          := FilterFServiceByISO(qfeedback.Services, qfeedback)
-		errorService.Check(err)
+	} else if textKey == "RU" && console.Step == 1 {
+		qfeedback.ISOCode       = textKey
+		services               := FilterFServiceByISO(qfeedback.Services, qfeedback)
 		qfeedback.Services      = services
 		console.Step 	         = 3
 	} else if console.Step == 1 {
 		console.Step 	         = 4
 	} else if console.Step == 3 {
-		qfeedback.Country       = text
+		qfeedback.Country       = strings.ToLower(textKey)
 		console.Step 	         = 4
 	} else if console.Step == 4 || console.Step == 2 {
-		qfeedback.Company       = strings.ToLower(text)
-		// Get Average Rate from top Web Portals
-		// pass   : feedback.Country, feedback.Company
-		// return : feedback.AvarageRate
+		qfeedback.Company       = strings.ToLower(textKey)
 		
-		feedbackService.SetRates(qfeedback, &feedBacks)
+		// Set Average Rate & Count of Reviews for All services
+		// Get Struct Array about Found feedback services
+		feedBacks = feedbackService.GetAllByCriteria(qfeedback)
 		// ----------------
 
 		fmt.Println("============== Feedbacks have been prepared =================")
@@ -118,11 +116,11 @@ func showMsg(console *models.ConsoleModel, text string) {
 	case 4:
 		fmt.Println("Enter Company, please: ")
 	default:
-		errorService.Check(errors.New("Unknown Step"))
+		helpers.CheckError(errors.New("Unknown Step"))
 	}
 }
 
-func FilterFServiceByISO(services []*models.FeedbackServiceModel, qfeedback *models.FeedbackQueryModel) ([]*models.FeedbackServiceModel, error) {
+func FilterFServiceByISO(services []*models.FeedbackServiceModel, qfeedback *models.FeedbackQueryModel) []*models.FeedbackServiceModel {
 	result := make([]*models.FeedbackServiceModel, 0, len(services))
 	for _, val := range services {
 		 if val.ISOCode == qfeedback.ISOCode {
@@ -131,8 +129,8 @@ func FilterFServiceByISO(services []*models.FeedbackServiceModel, qfeedback *mod
 	}
 
 	if len(result) == 0 {
-		return nil, errors.New("Reslut is empty")
+		helpers.CheckError(errors.New("Reslut is empty"))
 	} 
 
-	return result, nil
+	return result
 }

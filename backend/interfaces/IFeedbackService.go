@@ -5,5 +5,5 @@ import (
 )
 
 type IFeedbackService interface {
-	SetRates(*models.FeedbackQueryModel, *[]models.FeedbackModel)
+	GetAllByCriteria(*models.FeedbackQueryModel) []models.FeedbackModel
 }

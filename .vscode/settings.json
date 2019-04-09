@@ -3,6 +3,7 @@
     "[go]": {
         "editor.formatOnSave": false,
         "editor.tabSize": 3,
-    }
+    },
+    "search.usePCRE2": true
 
 }
