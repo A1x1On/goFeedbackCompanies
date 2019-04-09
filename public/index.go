@@ -36,71 +36,28 @@ func Index() {
 		{Title: "yelpSpain"     , Url : "https://www.yelp.com/search?find_desc=kfc&find_loc=Madrid%2C%20Spain" 		  					    , ISOCode: "EU", CountryCode: 1  },
 		{Title: "yelpDenmark"   , Url : "https://www.yelp.com/search?find_desc=kfc&find_loc=Copenhagen%2C%20Hovedstaden%2C%20Denmark"  , ISOCode: "EU", CountryCode: 1  },
 
-		{Title: "tripadvisorua" , Url : "https://www.tripadvisor.com/Search?geo=294473&pid=3826&q=kfc" 										    , ISOCode: "UA", CountryCode: 1  },
-		{Title: "otzyvua"       , Url : "https://www.otzyvua.net/search/?q=тонгруп" 									   					       , ISOCode: "UA", CountryCode: 1  },
+		{Title: "tripadvisorua" , Url : "https://www.tripadvisor.com/Search?geo=294473&pid=3826&q=kfc" 										    , ISOCode: "UA", CountryCode: 380},
+		{Title: "otzyvua"       , Url : "https://www.otzyvua.net/search/?q=тонгруп" 									   					       , ISOCode: "UA", CountryCode: 380},
 	}}
 
-	showMsg(console, "")
+	showMsg(console, "") // display first text instruction into the console
 	
+	// begin keyboard listening ... 
 	for scanner.Scan() {
 		switch scanner.Text() {
 			case "quite" : console.IsQuite = true
 			case "q"	 	 : console.IsQuite = true
-			default	    : execInput(console, qfeedback, scanner.Text()) // pick the appropriate step in the condition blocks
+			default	    : execInput(console, qfeedback, scanner.Text()) // pick the appropriate console step in the condition blocks
 		}
 	
-		if console.IsQuite {
+		if console.IsQuite { // if IsQuite == true do console exit
 			break
 		} else {
-			showMsg(console, scanner.Text())
+			showMsg(console, scanner.Text()) // display text instruction for next step
 		}
 	}
 
 	helpers.CheckError(scanner.Err())
-}
-
-func execInput(console *models.ConsoleModel, qfeedback *models.FeedbackQueryModel, textKey string) {
-	feedBacks := make([]models.FeedbackModel, 0)
-	textKey    = strings.ToUpper(textKey)
-
-	if (textKey== "UA" || textKey == "EU" || textKey == "US") && console.Step == 1 {
-		qfeedback.ISOCode       = textKey
-		services	              := FilterFServiceByISO(qfeedback.Services, qfeedback)
-		qfeedback.Services      = services
-		console.Step            = 2
-	} else if textKey == "RU" && console.Step == 1 {
-		qfeedback.ISOCode       = textKey
-		services               := FilterFServiceByISO(qfeedback.Services, qfeedback)
-		qfeedback.Services      = services
-		console.Step 	         = 3
-	} else if console.Step == 1 {
-		console.Step 	         = 4
-	} else if console.Step == 3 {
-		qfeedback.Country       = strings.ToLower(textKey)
-		console.Step 	         = 4
-	} else if console.Step == 4 || console.Step == 2 {
-		qfeedback.Company       = strings.ToLower(textKey)
-		
-		// Set Average Rate & Count of Reviews for All services
-		// Get Struct Array about Found feedback services
-		feedBacks = feedbackService.GetAllByCriteria(qfeedback)
-		// ----------------
-
-		fmt.Println("============== Feedbacks have been prepared =================")
-		for _, feedback := range feedBacks {
-			fmt.Println("-------------------------------------")
-			fmt.Println("Service Title: "  , feedback.ServiceTitle)
-			fmt.Println("Average Rate: "   , feedback.Rate)
-			fmt.Println("Review Count: "   , feedback.NumReviews)
-			fmt.Println("State of Result: ", feedback.StateResult)
-		}
-
-		fmt.Println("========== In Total of the Services ================")
-		fmt.Println("Average Rate: ", qfeedback.AvarageRate)
-		fmt.Println("Review Count: ", qfeedback.NumReviews)
-
-		console.IsQuite = true
-	}
 }
 
 func showMsg(console *models.ConsoleModel, text string) {
@@ -120,8 +77,54 @@ func showMsg(console *models.ConsoleModel, text string) {
 	}
 }
 
-func FilterFServiceByISO(services []*models.FeedbackServiceModel, qfeedback *models.FeedbackQueryModel) []*models.FeedbackServiceModel {
+func execInput(console *models.ConsoleModel, qfeedback *models.FeedbackQueryModel, textKey string) {
+	feedBacks := make([]models.FeedbackModel, 0)
+	textKey    = strings.ToUpper(textKey)
+
+	if (textKey== "UA" || textKey == "EU" || textKey == "US") && console.Step == 1 { // if is other zone
+		qfeedback.ISOCode       = textKey
+		services	              := filterFServiceByISO(qfeedback.Services, qfeedback) // filter/get services by entered ISOCode
+		qfeedback.Services      = services
+		console.Step            = 2
+	} else if textKey == "RU" && console.Step == 1 { // if is RU zone
+		qfeedback.ISOCode       = textKey
+		services               := filterFServiceByISO(qfeedback.Services, qfeedback)
+		qfeedback.Services      = services
+		console.Step 	         = 3
+	} else if console.Step == 1 { // if are All available zones
+		console.Step 	         = 4
+	} else if console.Step == 3 { // if is country
+		qfeedback.Country       = strings.ToLower(textKey)
+		console.Step 	         = 4
+	} else if (console.Step == 4 || console.Step == 2) && textKey != "" { // if is company
+		qfeedback.Company       = strings.ToLower(textKey)
+		
+		// Set Average Rate & Count of Reviews for All services
+		// Get Struct Array about Found feedback services
+		feedBacks = feedbackService.GetAllByCriteria(qfeedback)
+		// ----------------------------------------------------
+
+		fmt.Println("============== Feedbacks have been prepared =================")
+		for _, feedback := range feedBacks {
+			fmt.Println("-------------------------------------")
+			fmt.Println("Service Title: "  , feedback.ServiceTitle)
+			fmt.Println("Average Rate: "   , feedback.Rate)
+			fmt.Println("Review Count: "   , feedback.NumReviews)
+			fmt.Println("State of Result: ", feedback.StateResult)
+		}
+
+		fmt.Println("========== In Total of the Services ================")
+		fmt.Println("Average Rate: ", qfeedback.AvarageRate)
+		fmt.Println("Review Count: ", qfeedback.NumReviews)
+
+		console.IsQuite = true // console exit
+	}
+}
+
+func filterFServiceByISO(services []*models.FeedbackServiceModel, qfeedback *models.FeedbackQueryModel) []*models.FeedbackServiceModel {
 	result := make([]*models.FeedbackServiceModel, 0, len(services))
+
+	fmt.Println("----------- services[0].ISOCode----------", services[0].ISOCode)
 	for _, val := range services {
 		 if val.ISOCode == qfeedback.ISOCode {
 			result = append(result, val)
@@ -129,7 +132,11 @@ func FilterFServiceByISO(services []*models.FeedbackServiceModel, qfeedback *mod
 	}
 
 	if len(result) == 0 {
-		helpers.CheckError(errors.New("Reslut is empty"))
+		if qfeedback.ISOCode == "" {
+			helpers.CheckError(errors.New("qfeedback.ISOCode is empty => Reslut is empty"))
+		} else {
+			helpers.CheckError(errors.New("Reslut is empty"))
+		}
 	} 
 
 	return result

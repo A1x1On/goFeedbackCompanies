@@ -18,7 +18,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 	numReviews    := 0
 	selKey 		  := 0
 	setSumRate    := func(text string){
-		parsedRate, err := strconv.ParseFloat(trim(text), 64)
+		parsedRate, err := strconv.ParseFloat(trimAll(text), 64)
 		helpers.CheckError(err)
 		if parsedRate != 0 {
 			sumRate    = sumRate + parsedRate
@@ -40,7 +40,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 		}
 	}	
 
-	// take one
+	// prepare one feedback from some found company results in one service 
 	switch title {
 		case "flamp": {
 			doc.Find("cat-brand-filial-rating").Each(func(i int, sel *goquery.Selection) {
@@ -67,7 +67,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				if titleExp.MatchString(titleText) {
 					// get/set rate
 					rateHtml 	  := sel.Find("span.rating__value")
-					rateText 	  := trim(strings.ToLower(rateHtml.Text()))
+					rateText 	  := trimAll(strings.ToLower(rateHtml.Text()))
 					setSumRate(rateText)
 					// get/set reviews
 					reviewsHtml   := sel.Find("span.rating__reviews > span")
@@ -90,7 +90,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 					// get/set rate
 					rateHtml      := sel.Find(".img_p > .p_f_s")
 					rateExp, err  := regexp.Compile("[\\d\\.]*")
-					rateText      := rateExp.FindAllString(trim(rateHtml.Text()), -1)
+					rateText      := rateExp.FindAllString(trimAll(rateHtml.Text()), -1)
 					helpers.CheckError(err)
 					setSumRate(rateText[0])
 					// get/set reviews
@@ -287,7 +287,8 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 	}
 }
 
-func trim(text string) string {
+// trin all spaces and new lines
+func trimAll(text string) string {
 	text = regexp.MustCompile("[\\s\\t\\n]*").ReplaceAllString(text, "")
 	return text
 }

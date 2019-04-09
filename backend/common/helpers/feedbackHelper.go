@@ -1,13 +1,12 @@
 package helpers
 
 import (
-	"fmt"
+	//"fmt"
 	//"errors"
 	"regexp"
 	//"gov/backend/interfaces"
 	//"gov/backend/models"
 )
-
 
 var codeErrors 									= map[string]string{
 	"100" : "Continue",
@@ -88,34 +87,19 @@ var codeErrors 									= map[string]string{
 	"526" : "Invalid SSL Certificate",
 }
 
-
-//var errorService    interfaces.IErrorService    = &models.ErrorService{}
-
 func CheckIsHttpError(text string) (string, string){
 	code 			:= ""
 	msg  			:= ""
 
 	for key, val := range codeErrors {
-
-		
-
 		matched, err := regexp.MatchString(key, text)
 		CheckError(err)
 
-
-		fmt.Println("-----------key----------", key)
-		fmt.Println("-----------msg----------", val)
-
 		if matched {
-
 			code = key
 			msg  = val
-
-			fmt.Println("---------------------")
 			break
 		}
-
-
 	}
 
 	return code, msg

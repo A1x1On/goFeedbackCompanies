@@ -2,67 +2,79 @@ package public
 
 import (
 	"testing"
-	"fmt"
-
-	//"github.com/stretchr/testify/assert"
+	//"fmt"
+	"github.com/stretchr/testify/assert"
 	"gov/backend/models"
 )
 
-func TestGotKey(t *testing.T) {
-	fmt.Println("***************************TestGotKey*************************************")
-
+func TestExecInput(t *testing.T) {
 	console   := &models.ConsoleModel{IsQuite: false, Step: 1}
 	qfeedback := &models.FeedbackQueryModel{Services : []*models.FeedbackServiceModel{
 		{Title: "flamp", Url : "https://{country}.flamp.ru/search/{company}", ISOCode: "RU", CountryCode: 122},
 	}}
 
 	qfeedback.ISOCode = "RU"
-	gotKey(console, qfeedback, "RU")
+	enteredText		  := "ru"
+	execInput(console, qfeedback, enteredText)
 
 	qfeedback.ISOCode = "US"
-	gotKey(console, qfeedback, "US")
+	enteredText		   = "Us"
+	execInput(console, qfeedback, enteredText)
 
 	qfeedback.ISOCode = "EU"
-	gotKey(console, qfeedback, "EU")
+	enteredText		   = "eU"
+	execInput(console, qfeedback, enteredText)
 
 	qfeedback.ISOCode = "UA"
-	gotKey(console, qfeedback, "UA")
+	enteredText		   = "UA"
+	execInput(console, qfeedback, enteredText)
 
 	qfeedback.ISOCode = ""
-	gotKey(console, qfeedback, "")
+	enteredText		   = ""
+	execInput(console, qfeedback, enteredText)
+
 	console.Step	   = 2
 	qfeedback.Company = "kfc"
-	gotKey(console, qfeedback, "")
+	execInput(console, qfeedback, enteredText)
 
 	console.Step 		= 3
 	qfeedback.Country = "moscow"
-	gotKey(console, qfeedback, "")
+	execInput(console, qfeedback, enteredText)
 
 	console.Step 	   = 4
-	gotKey(console, qfeedback, "")
+	execInput(console, qfeedback, enteredText)
 
 	console.Step 	   = 4
 	qfeedback.ISOCode = "RU"
 	qfeedback.Country = ""
-	gotKey(console, qfeedback, "RU")
-
-
-	//assert.Equal(t, expectedResult, actualResult)
+	execInput(console, qfeedback, enteredText)
 }
 
 func TestShowMsg(t *testing.T) {
-	fmt.Println("***************************TestShowMsg*************************************")
-
-	console   := &models.ConsoleModel{IsQuite: false, Step: 1}
+	console 		:= &models.ConsoleModel{IsQuite: false, Step: 1}
+	enteredText := "US"
 	
-	showMsg(console, "US")
+	showMsg(console, enteredText)
 	console.Step = 2
-	showMsg(console, "US")
+	showMsg(console, enteredText)
 	console.Step = 3
-	showMsg(console, "US")
+	showMsg(console, enteredText)
 	console.Step = 4
-	showMsg(console, "US")
-	//console.Step = 5 // ERROR
-	//showMsg(console, "US")
+	showMsg(console, enteredText)
+	//console.Step = 5 // obvious error
+	//showMsg(console, enteredText)
+}
 
+func TestFilterFServiceByISO(t *testing.T) {
+	qfeedback    	:= &models.FeedbackQueryModel{ISOCode : "UA", Services : []*models.FeedbackServiceModel{
+		{Title: "flamp"         , Url : "https://{country}.flamp.ru/search/{company}"											     				, ISOCode: "RU", CountryCode: 122},
+		{Title: "yelp"          , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Washington%2C%20DC"    				, ISOCode: "US", CountryCode: 1  },
+		{Title: "yelpPoland"    , Url : "https://www.yelp.com/search?find_desc=kfc&find_loc=Warszawa%2C%20Mazowieckie%2C%20Poland" , ISOCode: "EU", CountryCode: 1  },
+		{Title: "tripadvisorua" , Url : "https://www.tripadvisor.com/Search?geo=294473&pid=3826&q=kfc" 									   , ISOCode: "UA", CountryCode: 380},
+	}}
+	expectedResult := []*models.FeedbackServiceModel{
+		{Title: "tripadvisorua" , Url : "https://www.tripadvisor.com/Search?geo=294473&pid=3826&q=kfc" 									   , ISOCode: "UA", CountryCode: 380},
+	}
+	actualResult	:= filterFServiceByISO(qfeedback.Services, qfeedback)
+	assert.Equal(t, expectedResult, actualResult)
 }

@@ -2,16 +2,11 @@ package services
 
 import (
 	"fmt"
-	//"github.com/PuerkitoBio/goquery"
 	"gov/backend/interfaces"
 	"gov/backend/models"
 	"gov/backend/repositories"
 	"gov/backend/services/auxiliary/feedBackAux"
-	//"gov/backend/common/helpers"
-	//"strings"
-	//"math"
 	"regexp"
-	//"strconv"
 )
 
 var feedbackRepository interfaces.IFeedbackRepository = &repositories.FeedbackRepository{}
@@ -42,23 +37,20 @@ func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel)
 			totalFeedback = totalFeedback - 1
 			continue
 		}
-
-		// replace templates keys into the data
-		urlDataSet(qFeedback, service)
+		
+		urlDataSet(qFeedback, service) // replace templates keys into the data
 		fmt.Println("'" + service.Title + "' is connecting ...", )
-		// get page of the service
-		doc, err := feedbackRepository.GetFeedbackPage(service.Url)
+		doc, err := feedbackRepository.GetFeedbackPage(service.Url) // get page of the service
 		if err != nil {
-			// add feedback error data
 			feedBacks = append(feedBacks, models.FeedbackModel{ServiceTitle: service.Title, Rate: 0.0, NumReviews: 0, StateResult: err.Error()})
 			continue
 		}
 
-		// get main feedback data
+		// parse got html for passed current service & get MAIN feedback data
 		rate, numReviews, state := feedBackAux.ParseService(doc, qFeedback, service.Title)
+		// ------------------------------------------------------------------
 		avarageBy 				    = avarageBy + rate
 		qFeedback.NumReviews     = qFeedback.NumReviews + numReviews
-		// add main feedback data
 		feedBacks 			       = append(feedBacks, models.FeedbackModel{ServiceTitle: service.Title, Rate: rate, NumReviews: numReviews, StateResult: state})
 
 		if rate == 0 {
