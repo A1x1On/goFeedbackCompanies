@@ -1,14 +1,10 @@
 package helpers
 
 import (
-	//"fmt"
-	//"errors"
 	"regexp"
-	//"gov/backend/interfaces"
-	//"gov/backend/models"
 )
 
-var codeErrors 									= map[string]string{
+var codeErrors = map[string]string{
 	"100" : "Continue",
 	"101" : "Switching Protocols",
 	"102" : "Processing",
@@ -88,9 +84,8 @@ var codeErrors 									= map[string]string{
 }
 
 func CheckIsHttpError(text string) (string, string){
-	code 			:= ""
-	msg  			:= ""
-
+	code 			 := ""
+	msg  			 := ""
 	for key, val := range codeErrors {
 		matched, err := regexp.MatchString(key, text)
 		CheckError(err)

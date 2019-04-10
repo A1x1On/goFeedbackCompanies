@@ -18,26 +18,25 @@ func Index() {
 	scanner   := bufio.NewScanner(os.Stdin)
 	console   := &models.ConsoleModel{IsQuite: false, Step: 1}
 	qfeedback := &models.FeedbackQueryModel{Services : []*models.FeedbackServiceModel{
-		{Title: "flamp"         , Url : "https://{country}.flamp.ru/search/{company}"		  			                                     , ISOCode: "RU", CountryCode: 122},
-		{Title: "yell"          , Url : "https://www.yell.ru/{country}/top/?text={company}"				                                  , ISOCode: "RU", CountryCode: 122},
-		{Title: "apoi"          , Url : "https://www.apoi.ru/kompanii/{country}?searchtext={company}"                                  , ISOCode: "RU", CountryCode: 122},
-		{Title: "pravda"        , Url : "https://pravda-sotrudnikov.ru/search?q={company}"			                                     , ISOCode: "RU", CountryCode: 122},
-		{Title: "spasibo"       , Url : "https://spasibovsem.ru/search/?q={company}" 					                                     , ISOCode: "RU", CountryCode: 122},
+		{Title: "flampRU"         , Url : "https://{country}.flamp.ru/search/{company}"		  			                                           , ISOCode: "RU", CountryCode: 122},
+		{Title: "yellRU"          , Url : "https://www.yell.ru/{country}/top/?text={company}"				                                        , ISOCode: "RU", CountryCode: 122},
+		{Title: "apoiMoscow"      , Url : "https://www.apoi.ru/kompanii/{country}?searchtext={company}"                                         , ISOCode: "RU", CountryCode: 122},
+		{Title: "pravdaRU"        , Url : "https://pravda-sotrudnikov.ru/search?q={company}"			                                           , ISOCode: "RU", CountryCode: 122},
+		{Title: "spasiboRU"       , Url : "https://spasibovsem.ru/search/?q={company}" 					                                           , ISOCode: "RU", CountryCode: 122},
 
-		{Title: "indeedcom"     , Url : "https://www.indeed.com/cmp?q={company}&l=&from=discovery-cmp-search"     					    	 , ISOCode: "US", CountryCode: 1  },
-		{Title: "yelp"          , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Washington%2C%20DC"   			   	 , ISOCode: "US", CountryCode: 1  },
-		{Title: "tripadvisorus" , Url : "https://www.yellowpages.com/search?search_terms={company}&geo_location_terms=Washington%2C+DC", ISOCode: "US", CountryCode: 1  },
-		{Title: "bbb"           , Url : "https://www.bbb.org/search?find_country=USA&find_text=kfc&page=1"  							       , ISOCode: "US", CountryCode: 1  },
-		{Title: "yellowpages"   , Url : "https://www.yellowpages.com/search?search_terms={company}&geo_location_terms=Washington%2C+DC", ISOCode: "US", CountryCode: 1  },
+		{Title: "indeedUS"        , Url : "https://www.indeed.com/cmp?q={company}&l=&from=discovery-cmp-search"     					    	 		 , ISOCode: "US", CountryCode: 1  },
+		{Title: "yelpWashington"  , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Washington%2C%20DC"   			   	 		 , ISOCode: "US", CountryCode: 1  },
+		{Title: "tripadWashington", Url : "https://www.yellowpages.com/search?search_terms={company}&geo_location_terms=Washington%2C+DC" 		 , ISOCode: "US", CountryCode: 1  },
+		{Title: "bbbUS"           , Url : "https://www.bbb.org/search?filter_ratings=F&find_country=USA&find_text={company}&page=1&sort=Rating" , ISOCode: "US", CountryCode: 1  },
+		{Title: "yellowWashington", Url : "https://www.yellowpages.com/search?search_terms={company}&geo_location_terms=Washington%2C+DC"		 , ISOCode: "US", CountryCode: 1  },
 
-		{Title: "tripadvisoreu" , Url : "https://www.tripadvisor.com/Search?geo=4&pid=3826&q=kfc" 		  							          , ISOCode: "EU", CountryCode: 1  },
-		{Title: "pagesjaunes"   , Url : "https://www.pagesjaunes.fr/recherche/berling-57/kfc" 		  							                , ISOCode: "EU", CountryCode: 1  },
-		{Title: "yelpPoland"    , Url : "https://www.yelp.com/search?find_desc=kfc&find_loc=Warszawa%2C%20Mazowieckie%2C%20Poland" 	 , ISOCode: "EU", CountryCode: 1  },
-		{Title: "yelpSpain"     , Url : "https://www.yelp.com/search?find_desc=kfc&find_loc=Madrid%2C%20Spain" 		  					    , ISOCode: "EU", CountryCode: 1  },
-		{Title: "yelpDenmark"   , Url : "https://www.yelp.com/search?find_desc=kfc&find_loc=Copenhagen%2C%20Hovedstaden%2C%20Denmark"  , ISOCode: "EU", CountryCode: 1  },
+		{Title: "yelpBritan"      , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=United%20Kingdom%20London" 		  				 , ISOCode: "EU", CountryCode: 1  },
+		{Title: "yelpNorway"      , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Norway%20Oslo" 		  							    , ISOCode: "EU", CountryCode: 1  },
+		{Title: "yelpPoland"      , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Warszawa%2C%20Mazowieckie%2C%20Poland" 	    , ISOCode: "EU", CountryCode: 1  },
+		{Title: "yelpSpain"       , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Madrid%2C%20Spain" 		  					    , ISOCode: "EU", CountryCode: 1  },
+		{Title: "yelpDenmark"     , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Denmark%20Copenhagen"         				    , ISOCode: "EU", CountryCode: 1  },
 
-		{Title: "tripadvisorua" , Url : "https://www.tripadvisor.com/Search?geo=294473&pid=3826&q=kfc" 										    , ISOCode: "UA", CountryCode: 380},
-		{Title: "otzyvua"       , Url : "https://www.otzyvua.net/search/?q=тонгруп" 									   					       , ISOCode: "UA", CountryCode: 380},
+		{Title: "otzyvUA"         , Url : "https://www.otzyvua.net/search/?q={company}" 									   					       		 , ISOCode: "UA", CountryCode: 380},
 	}}
 
 	showMsg(console, "") // display first text instruction into the console
@@ -122,9 +121,7 @@ func execInput(console *models.ConsoleModel, qfeedback *models.FeedbackQueryMode
 }
 
 func filterFServiceByISO(services []*models.FeedbackServiceModel, qfeedback *models.FeedbackQueryModel) []*models.FeedbackServiceModel {
-	result := make([]*models.FeedbackServiceModel, 0, len(services))
-
-	fmt.Println("----------- services[0].ISOCode----------", services[0].ISOCode)
+	result 	  := make([]*models.FeedbackServiceModel, 0, len(services))
 	for _, val := range services {
 		 if val.ISOCode == qfeedback.ISOCode {
 			result = append(result, val)

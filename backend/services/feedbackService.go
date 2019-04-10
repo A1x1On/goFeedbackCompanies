@@ -5,8 +5,11 @@ import (
 	"gov/backend/interfaces"
 	"gov/backend/models"
 	"gov/backend/repositories"
+	"gov/backend/common/helpers"
 	"gov/backend/services/auxiliary/feedBackAux"
 	"regexp"
+	"math/big"
+	"strconv"
 )
 
 var feedbackRepository interfaces.IFeedbackRepository = &repositories.FeedbackRepository{}
@@ -16,10 +19,10 @@ type FeedbackService struct{}
 func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel) []models.FeedbackModel{
 	feedBacks 				:= make([]models.FeedbackModel, 0)
 	qFeedback.AvarageRate = 0.0
-	avarageBy            := 0.0
+	averageBy            := 0.0
 	totalFeedback        := len(qFeedback.Services)
 	urlDataSet	         := func(qfeedback *models.FeedbackQueryModel, sFeedback *models.FeedbackServiceModel){		
-		if sFeedback.Title == "apoi" {
+		if sFeedback.Title == "apoiMoscow" {
 			if qfeedback.Country == "" || qfeedback.Country == "moscow" {
 				qfeedback.Country = "moskva"
 			}
@@ -40,6 +43,7 @@ func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel)
 		
 		urlDataSet(qFeedback, service) // replace templates keys into the data
 		fmt.Println("'" + service.Title + "' is connecting ...", )
+		
 		doc, err := feedbackRepository.GetFeedbackPage(service.Url) // get page of the service
 		if err != nil {
 			feedBacks = append(feedBacks, models.FeedbackModel{ServiceTitle: service.Title, Rate: 0.0, NumReviews: 0, StateResult: err.Error()})
@@ -49,7 +53,7 @@ func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel)
 		// parse got html for passed current service & get MAIN feedback data
 		rate, numReviews, state := feedBackAux.ParseService(doc, qFeedback, service.Title)
 		// ------------------------------------------------------------------
-		avarageBy 				    = avarageBy + rate
+		averageBy 				    = averageBy + rate
 		qFeedback.NumReviews     = qFeedback.NumReviews + numReviews
 		feedBacks 			       = append(feedBacks, models.FeedbackModel{ServiceTitle: service.Title, Rate: rate, NumReviews: numReviews, StateResult: state})
 
@@ -58,10 +62,13 @@ func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel)
 		}
 	}
 
-	if(avarageBy == 0){
+	if(averageBy == 0){
 		qFeedback.AvarageRate = 0
 	} else {
-		qFeedback.AvarageRate = avarageBy/float64(totalFeedback) 
+		qFeedback.AvarageRate = averageBy/float64(totalFeedback) 
+		fixedRate, err			 := strconv.ParseFloat(big.NewFloat(averageBy/float64(totalFeedback)).Text('f', 3), 64)
+		helpers.CheckError(err)
+		qFeedback.AvarageRate  = fixedRate
 	}
 
 	return feedBacks
