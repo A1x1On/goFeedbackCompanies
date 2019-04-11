@@ -6,7 +6,7 @@ import (
 	"gov/backend/interfaces"
 	"gov/backend/models"
 	"gov/backend/services"
-	"gov/backend/common/helpers"
+	"gov/backend/common/helper"
 	"errors"
 	"strings"
 	"os"
@@ -48,7 +48,7 @@ func Index() {
 			case "q"	 	 : console.IsQuite = true
 			default	    : execInput(console, qfeedback, scanner.Text()) // pick the appropriate console step in the condition blocks
 		}
-	
+		
 		if console.IsQuite { // if IsQuite == true do console exit
 			break
 		} else {
@@ -56,7 +56,7 @@ func Index() {
 		}
 	}
 
-	helpers.CheckError(scanner.Err())
+	helper.CheckError(scanner.Err())
 }
 
 func showMsg(console *models.ConsoleModel, text string) {
@@ -72,7 +72,7 @@ func showMsg(console *models.ConsoleModel, text string) {
 	case 4:
 		fmt.Println("Enter Company, please: ")
 	default:
-		helpers.CheckError(errors.New("Unknown Step"))
+		helper.CheckError(errors.New("Unknown Step"))
 	}
 }
 
@@ -130,9 +130,9 @@ func filterFServiceByISO(services []*models.FeedbackServiceModel, qfeedback *mod
 
 	if len(result) == 0 {
 		if qfeedback.ISOCode == "" {
-			helpers.CheckError(errors.New("qfeedback.ISOCode is empty => Reslut is empty"))
+			helper.CheckError(errors.New("qfeedback.ISOCode is empty => Reslut is empty"))
 		} else {
-			helpers.CheckError(errors.New("Reslut is empty"))
+			helper.CheckError(errors.New("Reslut is empty"))
 		}
 	} 
 

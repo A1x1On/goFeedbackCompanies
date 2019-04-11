@@ -3,7 +3,7 @@ package feedBackAux
 import (
 	"github.com/PuerkitoBio/goquery"
 	"gov/backend/models"
-	"gov/backend/common/helpers"
+	"gov/backend/common/helper"
 	"encoding/json"
 	"strings"
 	"math"
@@ -30,7 +30,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 	selKey 		  := 0
 	setSumRate    := func(text string){
 		parsedRate, err := strconv.ParseFloat(trimAll(text), 64)
-		helpers.CheckError(err)
+		helper.CheckError(err)
 		if parsedRate != 0 {
 			sumRate    = sumRate + parsedRate
 			numRate += 1
@@ -43,8 +43,8 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 	getState		  := func(iKey int) string{
 		if iKey == 0 {
 			html, err 		:= doc.Html()
-			helpers.CheckError(err)
-			code, msg := helpers.CheckIsHttpError(html)
+			helper.CheckError(err)
+			code, msg := helper.CheckIsHttpError(html)
 			return `"` + code + `" ` + msg
 		} else {
 			return "It's Parsed Successfully"
@@ -57,14 +57,14 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 			titleHtml     := sel.Find(".heading--h3__373c0__1n4Of > a")
 			titleText     := strings.ToLower(titleHtml.Text())
 			titleExp, err := regexp.Compile(qFeedback.Company)
-			helpers.CheckError(err)
+			helper.CheckError(err)
 
 			if titleExp.MatchString(titleText) {
 				// get/set rate
 				rateHtml 	  := sel.Find(".i-stars__373c0__30xVZ")
 				rateText, _   := rateHtml.Attr("aria-label")
 				rateExp, err  := regexp.Compile(`\d\.?\d?`)
-				helpers.CheckError(err)
+				helper.CheckError(err)
 				listRate  	  := rateExp.FindAllString(rateText, -1)
 				if len(listRate) != 0 {
 					setSumRate(listRate[0])
@@ -102,7 +102,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				titleHtml     := sel.Find(".companies__item-title-text")
 				titleText     := strings.ToLower(titleHtml.Text())
 				titleExp, err := regexp.Compile("\\B\\s?" + qFeedback.Company + "\\s?\\B")
-				helpers.CheckError(err)
+				helper.CheckError(err)
 
 				if titleExp.MatchString(titleText) {
 					// get/set rate
@@ -124,14 +124,14 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				titleHtml     := sel.Find(".m_title > .flw a")
 				titleText     := strings.ToLower(titleHtml.Text())
 				titleExp, err := regexp.Compile("\\B\\s?" + qFeedback.Company + "\\s?\\B")
-				helpers.CheckError(err)
+				helper.CheckError(err)
 
 				if titleExp.MatchString(titleText) {
 					// get/set rate
 					rateHtml      := sel.Find(".img_p > .p_f_s")
 					rateExp, err  := regexp.Compile("[\\d\\.]*")
 					rateText      := rateExp.FindAllString(trimAll(rateHtml.Text()), -1)
-					helpers.CheckError(err)
+					helper.CheckError(err)
 					setSumRate(rateText[0])
 					// get/set reviews
 					reviewsHtml   := sel.Find(".img_p > .numReviews")
@@ -149,7 +149,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				titleHtml     := sel.Find("span > a")
 				titleText     := strings.ToLower(titleHtml.Text())
 				titleExp, err := regexp.Compile("\\B\\s?" + qFeedback.Company + "\\s?\\B")
-				helpers.CheckError(err)
+				helper.CheckError(err)
 
 				if titleExp.MatchString(titleText) {
 					// get/set rate
@@ -168,7 +168,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				titleHtml     := sel.Find("td.left > .name > a")
 				titleText     := strings.ToLower(titleHtml.Text())
 				titleExp, err := regexp.Compile("\\B\\s?" + qFeedback.Company  + "\"\\s\\(")
-				helpers.CheckError(err)
+				helper.CheckError(err)
 
 				if titleExp.MatchString(titleText) {
 					// get/set rate
@@ -190,7 +190,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				titleHtml     := sel.Find(".cmp-CompanyWidget-name")
 				titleText     := strings.ToLower(titleHtml.Text())
 				titleExp, err := regexp.Compile(qFeedback.Company)
-				helpers.CheckError(err)
+				helper.CheckError(err)
 
 				if titleExp.MatchString(titleText) {
 					// get/set rate
@@ -208,14 +208,17 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				titleHtml     := sel.Find(".businessName__373c0__1fTgn h3 a")
 				titleText     := strings.ToLower(titleHtml.Text())
 				titleExp, err := regexp.Compile(qFeedback.Company)
-				helpers.CheckError(err)
+				helper.CheckError(err)
 
 				if titleExp.MatchString(titleText) {
 					// get/set rate
 					rateHtml      := sel.Find("div.attribute__373c0__1hPI_ span div")
 					rateText, _   := rateHtml.Attr("aria-label")
 					rateText	      = regexp.MustCompile("[\\D]*").ReplaceAllString(rateText, "")
-					setSumRate(rateText)
+
+					if rateText != "" {
+						setSumRate(rateText)
+					}
 
 					// get/set reviews
 					reviewsHtml   := sel.Find("div.attribute__373c0__1hPI_ .reviewCount__373c0__2r4xT")
@@ -229,21 +232,21 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 		case "tripadWashington": {
 			// get All HTML
 			html, err 				:= doc.Html()
-			helpers.CheckError(err)
+			helper.CheckError(err)
 			html 		  				 = strings.ToLower(html)
 
 			// get/check title
 			rateViewTripExp, err := regexp.Compile(`<span>`+ qFeedback.Company +`<\/span>.*&#34;}\" data-israteable=\"true\">`)
-			helpers.CheckError(err)
+			helper.CheckError(err)
 			listRateViewTrip     := rateViewTripExp.FindAllString(html, -1)
 
 			for key, val := range listRateViewTrip {
 				selKey = key + 1
 				// get/set rate
 				valExp, err	  := regexp.Compile(`\brating&#34;:&#34;[\d\.]*\b`)
-				helpers.CheckError(err)
+				helper.CheckError(err)
 				numExp, err	  := regexp.Compile(`\d\.?\d?$`)
-				helpers.CheckError(err)
+				helper.CheckError(err)
 				listVal  	  := valExp.FindAllString(val, -1)
 				rateText 	  := numExp.FindAllString(listVal[0], -1)
 				if len(rateText) != 0 {
@@ -252,7 +255,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				
 				// get/set reviews
 				valExp, err    = regexp.Compile(`count&#34;:&#34;\d?\b`)
-				helpers.CheckError(err)
+				helper.CheckError(err)
 				listVal        = valExp.FindAllString(val, -1)
 				reviewsText   := numExp.FindAllString(listVal[0], -1)
 
@@ -266,13 +269,13 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 		case "yellowWashington": {
 			// get HTML
 			html, err 	  := doc.Html()
-			helpers.CheckError(err)
+			helper.CheckError(err)
 			html 		  		= strings.ToLower(html)
 
 			// get rate & reviews as DOM string array by found companies
 			rateText      := ""
 			valExp, err	  := regexp.Compile(`<div class="result-rating\s\D*\d*\)`)
-			helpers.CheckError(err)
+			helper.CheckError(err)
 			listValue  	  := valExp.FindAllString(html, -1)
 
 			if len(listValue) == 0 { 
@@ -284,7 +287,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 
 				// get/set rate
 				rateExp, err  := regexp.Compile(`one|two|three|four|five`)
-				helpers.CheckError(err)
+				helper.CheckError(err)
 				rateNumText   := rateExp.FindAllString(val, -1)
 
 				if len(rateNumText) != 0 {
@@ -306,7 +309,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 
 				// get/set reviews
 				numExp, err	  := regexp.Compile(`\d*\)`)
-				helpers.CheckError(err)
+				helper.CheckError(err)
 				reviewsText   := numExp.FindAllString(val, -1)
 				if len(reviewsText) != 0 {
 					numReviews = getSumReviews(reviewsText[0][:1])
@@ -318,14 +321,14 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 		case "bbbUS": {
 			// get HTML
 			html, err 	  := doc.Html()
-			helpers.CheckError(err)
+			helper.CheckError(err)
 			html 		  		= strings.ToLower(html)
 
 			// get title & rate as json by found companies
 			sRating  	  := bbbRating{}
 			rateText      := ""
 			valExp, err	  := regexp.Compile(`bbbDtmData.*\}`)
-			helpers.CheckError(err)
+			helper.CheckError(err)
 			listValue  	  := valExp.FindAllString(doc.Text(), -1)
 
 			if len(listValue) == 0 {
@@ -333,7 +336,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 			}
 
 			jsonExp, err := regexp.Compile(`\{.*`)
-			helpers.CheckError(err)
+			helper.CheckError(err)
 			ratingJson   := jsonExp.FindAllString(listValue[0], -1)
 
 			if len(ratingJson) == 0 {
@@ -351,7 +354,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				// get/check title
 				titleText       := strings.ToLower(val.BusinessName)
 				titleExp, err   := regexp.Compile("^" + qFeedback.Company + "$")
-				helpers.CheckError(err)
+				helper.CheckError(err)
 
 				if titleExp.MatchString(titleText) {
 					// get/set rate
@@ -386,12 +389,12 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 	
 				// get/set rate
 				rateExp, err  := regexp.Compile(`г\s\d\.?\d?`)
-				helpers.CheckError(err)
+				helper.CheckError(err)
 				listRate 	  := rateExp.FindAllString(valHtml.Text(), -1)
 
 				if len(listRate) != 0 {
 					rateExp, err  := regexp.Compile(`\d\.?\d?`)
-					helpers.CheckError(err)
+					helper.CheckError(err)
 					listRate  	  := rateExp.FindAllString(trimAll(listRate[0]), -1)
 					if len(listRate) != 0 {
 						setSumRate(listRate[0])
@@ -400,7 +403,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 	
 				// get/set reviews
 				reviewsExp, err := regexp.Compile(`\s\d*\sо`)
-				helpers.CheckError(err)
+				helper.CheckError(err)
 				listReviews     := reviewsExp.FindAllString(valHtml.Text(), -1)
 				if len(listReviews) != 0 {
 					reviewsText	:= regexp.MustCompile("[\\D]*").ReplaceAllString(strings.TrimLeft(listReviews[0], " "), "")
@@ -420,7 +423,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 		return 0, numReviews, state
 	} else {
 		fixedRate, err	:= strconv.ParseFloat(big.NewFloat(sumRate/float64(numRate)).Text('f', 3), 64)
-		helpers.CheckError(err)
+		helper.CheckError(err)
 
 		return fixedRate, numReviews, state
 	}

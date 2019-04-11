@@ -5,7 +5,7 @@ import (
 	"gov/backend/interfaces"
 	"gov/backend/models"
 	"gov/backend/repositories"
-	"gov/backend/common/helpers"
+	"gov/backend/common/helper"
 	"gov/backend/services/auxiliary/feedBackAux"
 	"regexp"
 	"math/big"
@@ -67,7 +67,7 @@ func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel)
 	} else {
 		qFeedback.AvarageRate = averageBy/float64(totalFeedback) 
 		fixedRate, err			 := strconv.ParseFloat(big.NewFloat(averageBy/float64(totalFeedback)).Text('f', 3), 64)
-		helpers.CheckError(err)
+		helper.CheckError(err)
 		qFeedback.AvarageRate  = fixedRate
 	}
 

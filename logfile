@@ -402,3 +402,159 @@ C:/Go/src/runtime/proc.go:200 (0x42fc2c)
 C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
 	goexit: BYTE	$0x90	// NOP
 
+2019/04/11 19:20:10 *strconv.NumError strconv.ParseFloat: parsing "": invalid syntax
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/common/helper/errorHelper.go:5 (0x68688b)
+	CheckError: panic(err)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/common/helper/errorHelper.go:4 (0x686844)
+	CheckError: if err != nil {
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/auxiliary/feedBackAux/feedbackAux.go:218 (0x688064)
+	ParseService.func11: setSumRate(rateText)
+C:/Go/src/github.com/PuerkitoBio/goquery/iteration.go:10 (0x66b28a)
+	(*Selection).Each: f(i, newSingleSelection(n, s.document))
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/auxiliary/feedBackAux/feedbackAux.go:205 (0x685b09)
+	ParseService: doc.Find(".mainAttributes__373c0__1r0QA").Each(func(i int, sel *goquery.Selection) {
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/feedbackService.go:54 (0x688a86)
+	(*FeedbackService).GetAllByCriteria: rate, numReviews, state := feedBackAux.ParseService(doc, qFeedback, service.Title)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:126 (0x68ab81)
+	execInput: feedBacks = feedbackService.GetAllByCriteria(qfeedback)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:49 (0x689e5d)
+	Index: default	    : execInput(console, qfeedback, scanner.Text()) // pick the appropriate console step in the condition blocks
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:4 (0x68cf66)
+	main: Index() // begin app
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:4 (0x68cf61)
+	Public: Index() // begin app
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/11 19:22:10 *strconv.NumError strconv.ParseFloat: parsing "": invalid syntax
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/common/helper/errorHelper.go:5 (0x68688b)
+	CheckError: panic(err)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/common/helper/errorHelper.go:4 (0x686844)
+	CheckError: if err != nil {
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/auxiliary/feedBackAux/feedbackAux.go:218 (0x688064)
+	ParseService.func11: setSumRate(rateText)
+C:/Go/src/github.com/PuerkitoBio/goquery/iteration.go:10 (0x66b28a)
+	(*Selection).Each: f(i, newSingleSelection(n, s.document))
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/auxiliary/feedBackAux/feedbackAux.go:205 (0x685b09)
+	ParseService: doc.Find(".mainAttributes__373c0__1r0QA").Each(func(i int, sel *goquery.Selection) {
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/feedbackService.go:54 (0x688a86)
+	(*FeedbackService).GetAllByCriteria: rate, numReviews, state := feedBackAux.ParseService(doc, qFeedback, service.Title)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:130 (0x68ac1e)
+	execInput: feedBacks = feedbackService.GetAllByCriteria(qfeedback)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:49 (0x689e5d)
+	Index: default	    : execInput(console, qfeedback, scanner.Text()) // pick the appropriate console step in the condition blocks
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:4 (0x68cff6)
+	main: Index() // begin app
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:4 (0x68cff1)
+	Public: Index() // begin app
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/11 19:22:33 *strconv.NumError strconv.ParseFloat: parsing "": invalid syntax
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/common/helper/errorHelper.go:5 (0x68688b)
+	CheckError: panic(err)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/common/helper/errorHelper.go:4 (0x686844)
+	CheckError: if err != nil {
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/auxiliary/feedBackAux/feedbackAux.go:218 (0x688064)
+	ParseService.func11: setSumRate(rateText)
+C:/Go/src/github.com/PuerkitoBio/goquery/iteration.go:10 (0x66b28a)
+	(*Selection).Each: f(i, newSingleSelection(n, s.document))
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/auxiliary/feedBackAux/feedbackAux.go:205 (0x685b09)
+	ParseService: doc.Find(".mainAttributes__373c0__1r0QA").Each(func(i int, sel *goquery.Selection) {
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/feedbackService.go:54 (0x688a86)
+	(*FeedbackService).GetAllByCriteria: rate, numReviews, state := feedBackAux.ParseService(doc, qFeedback, service.Title)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:130 (0x68ac1e)
+	execInput: feedBacks = feedbackService.GetAllByCriteria(qfeedback)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:49 (0x689e5d)
+	Index: default	    : execInput(console, qfeedback, scanner.Text()) // pick the appropriate console step in the condition blocks
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:4 (0x68cff6)
+	main: Index() // begin app
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:4 (0x68cff1)
+	Public: Index() // begin app
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/11 19:23:00 *strconv.NumError strconv.ParseFloat: parsing "": invalid syntax
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/common/helper/errorHelper.go:5 (0x68688b)
+	CheckError: panic(err)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/common/helper/errorHelper.go:4 (0x686844)
+	CheckError: if err != nil {
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/auxiliary/feedBackAux/feedbackAux.go:218 (0x688064)
+	ParseService.func11: setSumRate(rateText)
+C:/Go/src/github.com/PuerkitoBio/goquery/iteration.go:10 (0x66b28a)
+	(*Selection).Each: f(i, newSingleSelection(n, s.document))
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/auxiliary/feedBackAux/feedbackAux.go:205 (0x685b09)
+	ParseService: doc.Find(".mainAttributes__373c0__1r0QA").Each(func(i int, sel *goquery.Selection) {
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/feedbackService.go:54 (0x688a86)
+	(*FeedbackService).GetAllByCriteria: rate, numReviews, state := feedBackAux.ParseService(doc, qFeedback, service.Title)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:130 (0x68ac1b)
+	execInput: feedBacks = feedbackService.GetAllByCriteria(qfeedback)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:49 (0x689e5d)
+	Index: default	    : execInput(console, qfeedback, scanner.Text()) // pick the appropriate console step in the condition blocks
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:4 (0x68cff6)
+	main: Index() // begin app
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:4 (0x68cff1)
+	Public: Index() // begin app
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/11 19:26:00 *strconv.NumError strconv.ParseFloat: parsing "": invalid syntax
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/common/helper/errorHelper.go:5 (0x68683b)
+	CheckError: panic(err)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/common/helper/errorHelper.go:4 (0x6867f4)
+	CheckError: if err != nil {
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/auxiliary/feedBackAux/feedbackAux.go:221 (0x688014)
+	ParseService.func11: setSumRate(rateText)
+C:/Go/src/github.com/PuerkitoBio/goquery/iteration.go:10 (0x66b28a)
+	(*Selection).Each: f(i, newSingleSelection(n, s.document))
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/auxiliary/feedBackAux/feedbackAux.go:208 (0x685ab3)
+	ParseService: doc.Find(".mainAttributes__373c0__1r0QA").Each(func(i int, sel *goquery.Selection) {
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/feedbackService.go:54 (0x688a36)
+	(*FeedbackService).GetAllByCriteria: rate, numReviews, state := feedBackAux.ParseService(doc, qFeedback, service.Title)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:103 (0x68a99e)
+	execInput: feedBacks = feedbackService.GetAllByCriteria(qfeedback)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:49 (0x689e0d)
+	Index: default	    : execInput(console, qfeedback, scanner.Text()) // pick the appropriate console step in the condition blocks
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:4 (0x68cc96)
+	main: Index() // begin app
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:4 (0x68cc91)
+	Public: Index() // begin app
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/11 19:27:49 *strconv.NumError strconv.ParseFloat: parsing "": invalid syntax
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/common/helper/errorHelper.go:5 (0x68683b)
+	CheckError: panic(err)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/common/helper/errorHelper.go:4 (0x6867f4)
+	CheckError: if err != nil {
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/auxiliary/feedBackAux/feedbackAux.go:224 (0x6880c4)
+	ParseService.func11: setSumRate(rateText)
+C:/Go/src/github.com/PuerkitoBio/goquery/iteration.go:10 (0x66b28a)
+	(*Selection).Each: f(i, newSingleSelection(n, s.document))
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/auxiliary/feedBackAux/feedbackAux.go:208 (0x685ab3)
+	ParseService: doc.Find(".mainAttributes__373c0__1r0QA").Each(func(i int, sel *goquery.Selection) {
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/backend/services/feedbackService.go:54 (0x688ae6)
+	(*FeedbackService).GetAllByCriteria: rate, numReviews, state := feedBackAux.ParseService(doc, qFeedback, service.Title)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:103 (0x68aa4e)
+	execInput: feedBacks = feedbackService.GetAllByCriteria(qfeedback)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/index.go:49 (0x689ebd)
+	Index: default	    : execInput(console, qfeedback, scanner.Text()) // pick the appropriate console step in the condition blocks
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:4 (0x68cd46)
+	main: Index() // begin app
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/public/public.go:4 (0x68cd41)
+	Public: Index() // begin app
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
