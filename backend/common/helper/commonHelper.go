@@ -1,7 +1,7 @@
 package helper
 
 // analogue of ternary operator for get
-func IfGet(statement bool, a, b interface{}) interface{} {
+func GetIf(statement bool, a, b interface{}) interface{} {
 	if statement {
 		 return a
 	}
@@ -9,11 +9,11 @@ func IfGet(statement bool, a, b interface{}) interface{} {
 }
 
 // analogue of ternary operator for func exec 
-func IfSet(statement bool, fnA, fnB interface{}){
+func SetIf(statement bool, fnA, fnB func()){
 	if statement {
-		fnA.(func())()
+		fnA()
   } else {
-	fnB.(func())()
+	fnB()
   }
 }
 
