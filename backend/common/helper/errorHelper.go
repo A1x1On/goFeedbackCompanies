@@ -5,4 +5,3 @@ func CheckError(err error) {
 		panic(err)
 	}
 }
-

@@ -18,6 +18,7 @@ type FeedbackService struct{}
 
 func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel) []models.FeedbackModel{
 	feedBacks 				:= make([]models.FeedbackModel, 0)
+	errorState 				:= &models.ErrorStateModel{}
 	qFeedback.AvarageRate = 0.0
 	averageBy            := 0.0
 	totalFeedback        := len(qFeedback.Services)
@@ -46,16 +47,21 @@ func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel)
 		
 		doc, err := feedbackRepository.GetFeedbackPage(service.Url) // get page of the service
 		if err != nil {
-			feedBacks = append(feedBacks, models.FeedbackModel{ServiceTitle: service.Title, Rate: 0.0, NumReviews: 0, StateResult: err.Error()})
+			errorState = &models.ErrorStateModel{
+				Message : err.Error(),
+				Code    : 666,
+			}
+
+			feedBacks = append(feedBacks, models.FeedbackModel{ServiceTitle: service.Title, Rate: 0.0, NumReviews: 0, ErrorState: errorState})
 			continue
 		}
 
 		// parse got html for passed current service & get MAIN feedback data
-		rate, numReviews, state := feedBackAux.ParseService(doc, qFeedback, service.Title)
+		rate, numReviews, errState := feedBackAux.ParseService(doc, qFeedback, service.Title)
 		// ------------------------------------------------------------------
-		averageBy 				    = averageBy + rate
-		qFeedback.NumReviews     = qFeedback.NumReviews + numReviews
-		feedBacks 			       = append(feedBacks, models.FeedbackModel{ServiceTitle: service.Title, Rate: rate, NumReviews: numReviews, StateResult: state})
+		averageBy 				       = averageBy + rate
+		qFeedback.NumReviews        = qFeedback.NumReviews + numReviews
+		feedBacks 			          = append(feedBacks, models.FeedbackModel{ServiceTitle: service.Title, Rate: rate, NumReviews: numReviews, ErrorState: errState})
 
 		if rate == 0 {
 			totalFeedback = totalFeedback - 1

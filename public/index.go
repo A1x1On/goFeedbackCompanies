@@ -109,7 +109,8 @@ func execInput(console *models.ConsoleModel, qfeedback *models.FeedbackQueryMode
 			fmt.Println("Service Title: "  , feedback.ServiceTitle)
 			fmt.Println("Average Rate: "   , feedback.Rate)
 			fmt.Println("Review Count: "   , feedback.NumReviews)
-			fmt.Println("State of Result: ", feedback.StateResult)
+			fmt.Println("State of Result [MESSAGE]: ", feedback.ErrorState.Message)
+			fmt.Println("State of Result [CODE]: ", feedback.ErrorState.Code)
 		}
 
 		fmt.Println("========== In Total of the Services ================")

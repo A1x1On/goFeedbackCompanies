@@ -21,14 +21,14 @@ type bbbRating struct {
 	} `json:"search"`
 }
 
-
-func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, title string) (float64, int, string) {
-	state		     := "Unknown Status"
+func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, title string) (float64, int, *models.ErrorStateModel) {
+	// define errorState
+	errorState 	  := &models.ErrorStateModel{Message: "null", Code: 0}
 	sumRate		  := 0.0
 	numRate       := 0
 	numReviews    := 0
 	selKey 		  := 0
-	setSumRate    := func(text string){
+	foldRate      := func(text string){
 		parsedRate, err := strconv.ParseFloat(trimAll(text), 64)
 		helper.CheckError(err)
 		if parsedRate != 0 {
@@ -40,17 +40,16 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 		reviewsInt, _ := strconv.Atoi(reviewsText)
 		return numReviews + reviewsInt
 	}
-	getState		  := func(iKey int) string{
-		if iKey == 0 {
+	setIfGotError := func(iKey int, code int){
+		if code != 0 {
+			errorState     = helper.GetHttpErrorByCode(code)	
+		} else if iKey == 0 {
 			html, err 		:= doc.Html()
 			helper.CheckError(err)
-			code, msg := helper.CheckIsHttpError(html)
-			return `"` + code + `" ` + msg
-		} else {
-			return "It's Parsed Successfully"
+			errorState	    = helper.GetHttpErrorByHtml(html)
 		}
 	}
-	caseForYelp		:= func(){
+	caseForYelp	  := func(){
 		doc.Find(".mainAttributes__373c0__1r0QA").Each(func(i int, sel *goquery.Selection) {
 			selKey = i + 1
 			// get/check title
@@ -67,7 +66,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				helper.CheckError(err)
 				listRate  	  := rateExp.FindAllString(rateText, -1)
 				if len(listRate) != 0 {
-					setSumRate(listRate[0])
+					foldRate(listRate[0])
 				}
 			
 				// get/set reviews
@@ -76,8 +75,6 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				numReviews	   = getSumReviews(reviewsText)
 			}
 		})
-
-		state = getState(selKey)
 	}	
 
 	// prepare one feedback from some found company results in one service 
@@ -87,13 +84,11 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				selKey = i + 1
 				// get/set rate
 				rateText, _          := sel.Attr("rating")
-				setSumRate(rateText)
+				foldRate(rateText)
 				// get/set reviews
 				reviewsText, _       := sel.Attr("reviews-count")
 				numReviews	   		 = getSumReviews(reviewsText)
 			})
-
-			state = getState(selKey)
 		} 
 		case "yellRU": {
 			doc.Find("div.companies__item-content").Each(func(i int, sel *goquery.Selection) {	
@@ -108,14 +103,12 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 					// get/set rate
 					rateHtml 	  := sel.Find("span.rating__value")
 					rateText 	  := trimAll(strings.ToLower(rateHtml.Text()))
-					setSumRate(rateText)
+					foldRate(rateText)
 					// get/set reviews
 					reviewsHtml   := sel.Find("span.rating__reviews > span")
 					numReviews	   = getSumReviews(reviewsHtml.Text())
 				}
 			})
-
-			state = getState(selKey)
 		} 
 		case "apoiMoscow": {
 			doc.Find("div.w_star").Each(func(i int, sel *goquery.Selection) {
@@ -132,15 +125,13 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 					rateExp, err  := regexp.Compile("[\\d\\.]*")
 					rateText      := rateExp.FindAllString(trimAll(rateHtml.Text()), -1)
 					helper.CheckError(err)
-					setSumRate(rateText[0])
+					foldRate(rateText[0])
 					// get/set reviews
 					reviewsHtml   := sel.Find(".img_p > .numReviews")
 					reviewsText	  := regexp.MustCompile("[\\D]*").ReplaceAllString(reviewsHtml.Text(), "")
 					numReviews	   = getSumReviews(reviewsText)
 				}
 			})
-
-			state = getState(selKey)
 		} 
 		case "pravdaRU": {
 			doc.Find(".mdc-companies-item-title").Each(func(i int, sel *goquery.Selection) {
@@ -155,11 +146,9 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 					// get/set rate
 					rateHtml    := sel.Find(".mdc-companies-item-rating > span")
 					rateText, _ := rateHtml.Attr("data-rating")
-					setSumRate(rateText)
+					foldRate(rateText)
 				}
 			})
-
-			state = getState(selKey)
 		} 
 		case "spasiboRU": {
 			doc.Find("table.items tbody tr").Each(func(i int, sel *goquery.Selection) {
@@ -174,14 +163,12 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 					// get/set rate
 					rateHtml      := sel.Find("div.stars")
 					rateText, _   := rateHtml.Attr("data-fill")
-					setSumRate(rateText)
+					foldRate(rateText)
 					// get/set reviews
 					reviewsHtml   := sel.Find("td.num")
 					numReviews	   = getSumReviews(reviewsHtml.Text())
 				}
 			})
-
-			state = getState(selKey)
 		} 
 		case "indeedUS": {
 			doc.Find(".cmp-CompanyWidget:first-child").Each(func(i int, sel *goquery.Selection) {
@@ -195,11 +182,9 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				if titleExp.MatchString(titleText) {
 					// get/set rate
 					rateHtml := sel.Find(".cmp-CompanyWidget-rating-link")
-					setSumRate(rateHtml.Text())
+					foldRate(rateHtml.Text())
 				}
 			})
-
-			state = getState(selKey)
 		}
 		case "yelpWashington": {
 			doc.Find(".mainAttributes__373c0__1r0QA").Each(func(i int, sel *goquery.Selection) {
@@ -217,7 +202,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 					rateText	      = regexp.MustCompile("[\\D]*").ReplaceAllString(rateText, "")
 
 					if rateText != "" {
-						setSumRate(rateText)
+						foldRate(rateText)
 					}
 
 					// get/set reviews
@@ -226,8 +211,6 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 					numReviews	   = getSumReviews(reviewsText)
 				}
 			})
-
-			state = getState(selKey)
 		}
 		case "tripadWashington": {
 			// get All HTML
@@ -250,7 +233,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 				listVal  	  := valExp.FindAllString(val, -1)
 				rateText 	  := numExp.FindAllString(listVal[0], -1)
 				if len(rateText) != 0 {
-					setSumRate(rateText[0])
+					foldRate(rateText[0])
 				}
 				
 				// get/set reviews
@@ -263,8 +246,6 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 					numReviews = getSumReviews(reviewsText[0])
 				}
 			}
-
-			state = getState(selKey)
 		}
 		case "yellowWashington": {
 			// get HTML
@@ -304,7 +285,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 					} else {
 						rateText = "0.0"
 					}
-					setSumRate(rateText)
+					foldRate(rateText)
 				}
 
 				// get/set reviews
@@ -315,8 +296,6 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 					numReviews = getSumReviews(reviewsText[0][:1])
 				}
 			}
-
-			state = getState(selKey)
 		}
 		case "bbbUS": {
 			// get HTML
@@ -371,11 +350,9 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 					} else {
 						rateText = "0.0"
 					}
-					setSumRate(rateText)	
+					foldRate(rateText)	
 				}
 			}
-
-			state = getState(selKey)
 		} 
 		case "yelpPoland" : caseForYelp()	
 		case "yelpSpain"  : caseForYelp()
@@ -397,7 +374,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 					helper.CheckError(err)
 					listRate  	  := rateExp.FindAllString(trimAll(listRate[0]), -1)
 					if len(listRate) != 0 {
-						setSumRate(listRate[0])
+						foldRate(listRate[0])
 					}
 				}
 	
@@ -410,22 +387,22 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 					numReviews	 = getSumReviews(reviewsText)
 				}
 			})
-	
-			state = getState(selKey)
 		}
 		default: {
-			state = "Specified '" + title + "' Service has been not found"
+			selKey = -1
 			break
 		}
 	}
 
+	// define errorState
+	setIfGotError(selKey, 0)
+
 	if math.IsNaN(sumRate/float64(numRate)) {
-		return 0, numReviews, state
+		return 0, numReviews, errorState
 	} else {
 		fixedRate, err	:= strconv.ParseFloat(big.NewFloat(sumRate/float64(numRate)).Text('f', 3), 64)
 		helper.CheckError(err)
-
-		return fixedRate, numReviews, state
+		return fixedRate, numReviews, errorState
 	}
 }
 

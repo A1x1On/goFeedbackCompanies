@@ -558,3 +558,87 @@ C:/Go/src/runtime/proc.go:200 (0x42fc2c)
 C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
 	goexit: BYTE	$0x90	// NOP
 
+2019/04/15 15:58:55 *url.Error Get /?login=2tzEhq13&pass=bHXAG7sJ: unsupported protocol scheme ""
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:43 (0x68d1f9)
+	main: panic(err)
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/15 16:00:04 *url.Error Get http://146.185.209.252:***@2tzEhq13:bHXAG7sJ: invalid URL port "bHXAG7sJ"
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:43 (0x68d1f9)
+	main: panic(err)
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/15 16:02:01 *url.Error Get http://146.185.209.252:3430?login=2tzEhq13&pass=bHXAG7sJ: invalid proxy URL port "proxyPort"
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:48 (0x68d36f)
+	main: panic(err)
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/15 16:03:01 *url.Error Get ?login=2tzEhq13&pass=bHXAG7sJ: unsupported protocol scheme ""
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:48 (0x68d36f)
+	main: panic(err)
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/15 16:03:13 *url.Error Get http:?login=2tzEhq13&pass=bHXAG7sJ: http: no Host in request URL
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:48 (0x68d36f)
+	main: panic(err)
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/15 16:03:23 *url.Error Get http:///?login=2tzEhq13&pass=bHXAG7sJ: http: no Host in request URL
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:48 (0x68d36f)
+	main: panic(err)
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/15 16:20:54 *url.Error Post http:: http: no Host in request URL
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:57 (0x68d73c)
+	main: panic(err)
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/15 17:26:00 runtime.errorString runtime error: invalid memory address or nil pointer dereference
+C:/Go/src/runtime/panic.go:82 (0x440466)
+	panicmem: panic(memoryError)
+C:/Go/src/runtime/panic.go:81 (0x440301)
+	panicmem: panicCheckMalloc(memoryError)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:124 (0x68e87f)
+	prox: log.Println(response.StatusCode)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:29 (0x68e2db)
+	main: prox()
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
+2019/04/15 17:26:06 runtime.errorString runtime error: invalid memory address or nil pointer dereference
+C:/Go/src/runtime/panic.go:82 (0x440466)
+	panicmem: panic(memoryError)
+C:/Go/src/runtime/panic.go:81 (0x440301)
+	panicmem: panicCheckMalloc(memoryError)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:124 (0x68e87f)
+	prox: log.Println(response.StatusCode)
+C:/Users/AxOn/Documents/projects/techStarters/go/src/gov/main.go:29 (0x68e2db)
+	main: prox()
+C:/Go/src/runtime/proc.go:200 (0x42fc2c)
+	main: fn()
+C:/Go/src/runtime/asm_amd64.s:1337 (0x457441)
+	goexit: BYTE	$0x90	// NOP
+
