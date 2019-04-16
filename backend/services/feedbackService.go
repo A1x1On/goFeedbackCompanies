@@ -1,20 +1,30 @@
 package services
 
 import (
-	"fmt"
-	"gov/backend/interfaces"
-	"gov/backend/models"
-	"gov/backend/repositories"
-	"gov/backend/common/helper"
 	"gov/backend/services/auxiliary/feedBackAux"
-	"regexp"
+	"gov/backend/common/connections"
+	"gov/backend/common/helper"
+	"gov/backend/common/config"
+	"gov/backend/repositories"
+	"gov/backend/interfaces"
+	"github.com/pkg/errors"
+	"gov/backend/models"
 	"math/big"
 	"strconv"
+	"regexp"
+	"fmt"	
 )
 
 var feedbackRepository interfaces.IFeedbackRepository = &repositories.FeedbackRepository{}
 
 type FeedbackService struct{}
+
+func (s *FeedbackService) GetAll() string{
+	baseUrl := config.Get().API.BaseURL.Golang
+	//params := map[string]string{"login" : "2tzEhq13","pass" : "bHXAG7sJ",}
+	response := connections.ProxyRequest("GET",  baseUrl + "x/net/prox", nil)
+	return string(response)
+}
 
 func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel) []models.FeedbackModel{
 	feedBacks 				:= make([]models.FeedbackModel, 0)
@@ -73,7 +83,7 @@ func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel)
 	} else {
 		qFeedback.AvarageRate = averageBy/float64(totalFeedback) 
 		fixedRate, err			 := strconv.ParseFloat(big.NewFloat(averageBy/float64(totalFeedback)).Text('f', 3), 64)
-		helper.CheckError(err)
+		helper.CheckError(errors.Wrap(err, "can't (strconv.ParseFloat) to get [fixedRate]"))
 		qFeedback.AvarageRate  = fixedRate
 	}
 

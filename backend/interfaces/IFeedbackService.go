@@ -6,4 +6,5 @@ import (
 
 type IFeedbackService interface {
 	GetAllByCriteria(*models.FeedbackQueryModel) []models.FeedbackModel
+	GetAll() string
 }

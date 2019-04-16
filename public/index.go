@@ -1,14 +1,14 @@
 package public
 
 import (
+	"gov/backend/common/helper"
+	"gov/backend/interfaces"
+	"github.com/pkg/errors"
+	"gov/backend/services"
+	"gov/backend/models"
+	"strings"
 	"bufio"
 	"fmt"
-	"gov/backend/interfaces"
-	"gov/backend/models"
-	"gov/backend/services"
-	"gov/backend/common/helper"
-	"errors"
-	"strings"
 	"os"
 )
 
@@ -39,6 +39,9 @@ func Index() {
 		{Title: "otzyvUA"         , Url : "https://www.otzyvua.net/search/?q={company}" 									   					       		 , ISOCode: "UA", CountryCode: 380},
 	}}
 
+	response := feedbackService.GetAll()
+	fmt.Println("response", response)
+
 	showMsg(console, "") // display first text instruction into the console
 	
 	// begin keyboard listening ... 
@@ -56,7 +59,7 @@ func Index() {
 		}
 	}
 
-	helper.CheckError(scanner.Err())
+	helper.CheckError(errors.Wrap(scanner.Err(), "by Enter keyboard key got error (for scanner.Scan()"))
 }
 
 func showMsg(console *models.ConsoleModel, text string) {
@@ -72,7 +75,7 @@ func showMsg(console *models.ConsoleModel, text string) {
 	case 4:
 		fmt.Println("Enter Company, please: ")
 	default:
-		helper.CheckError(errors.New("Unknown Step"))
+		helper.CheckError(errors.Wrap(errors.New("Unknown Step"), "Switch default triggered (showMsg))"))
 	}
 }
 
@@ -106,16 +109,16 @@ func execInput(console *models.ConsoleModel, qfeedback *models.FeedbackQueryMode
 		fmt.Println("============== Feedbacks have been prepared =================")
 		for _, feedback := range feedBacks {
 			fmt.Println("-------------------------------------")
-			fmt.Println("Service Title: "  , feedback.ServiceTitle)
-			fmt.Println("Average Rate: "   , feedback.Rate)
-			fmt.Println("Review Count: "   , feedback.NumReviews)
-			fmt.Println("State of Result [MESSAGE]: ", feedback.ErrorState.Message)
-			fmt.Println("State of Result [CODE]: ", feedback.ErrorState.Code)
+			fmt.Println("Service Title: "             , feedback.ServiceTitle)
+			fmt.Println("Average Rate: "              , feedback.Rate)
+			fmt.Println("Review Count: "              , feedback.NumReviews)
+			fmt.Println("State of Result [MESSAGE]: " , feedback.ErrorState.Message)
+			fmt.Println("State of Result [CODE]: "		, feedback.ErrorState.Code)
 		}
 
 		fmt.Println("========== In Total of the Services ================")
-		fmt.Println("Average Rate: ", qfeedback.AvarageRate)
-		fmt.Println("Review Count: ", qfeedback.NumReviews)
+		fmt.Println("Average Rate: "					   , qfeedback.AvarageRate)
+		fmt.Println("Review Count: "					   , qfeedback.NumReviews)
 
 		console.IsQuite = true // console exit
 	}
@@ -131,9 +134,9 @@ func filterFServiceByISO(services []*models.FeedbackServiceModel, qfeedback *mod
 
 	if len(result) == 0 {
 		if qfeedback.ISOCode == "" {
-			helper.CheckError(errors.New("qfeedback.ISOCode is empty => Reslut is empty"))
+			helper.CheckError(errors.Wrap(errors.New("Reslut is empty"), "[result] can't be 0 and [qfeedback.ISOCode] can't be '' (filterFServiceByISO)"))
 		} else {
-			helper.CheckError(errors.New("Reslut is empty"))
+			helper.CheckError(errors.Wrap(errors.New("Reslut is empty"), "[result] can't be 0 (filterFServiceByISO)"))
 		}
 	} 
 

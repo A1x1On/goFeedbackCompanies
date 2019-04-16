@@ -1,0 +1,12 @@
+{
+    "proxy" : {
+        "adress" : "socks://146.185.209.252:3430",
+        "login"  : "2tzEhq13",
+        "pass"   : "bHXAG7sJ"
+    },
+    "api" : {
+        "baseUrl" : {
+            "golang" : "http://golang.org/"
+        }
+    }
+}

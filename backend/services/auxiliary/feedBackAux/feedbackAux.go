@@ -2,14 +2,14 @@ package feedBackAux
 
 import (
 	"github.com/PuerkitoBio/goquery"
-	"gov/backend/models"
 	"gov/backend/common/helper"
+	"gov/backend/models"
 	"encoding/json"
-	"strings"
-	"math"
 	"math/big"
-	"regexp"
 	"strconv"
+	"strings"
+	"regexp"
+	"math"
 )
 
 type bbbRating struct {
@@ -389,7 +389,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 			})
 		}
 		default: {
-			selKey = -1
+			setIfGotError(selKey, 404)
 			break
 		}
 	}
