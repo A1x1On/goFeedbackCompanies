@@ -1,16 +1,18 @@
 package main
 
 import (
+	"gov/backend/common/config"
+	"github.com/go-errors/errors"
 	"gov/public"
 	"fmt"
-	"os"
 	"log"
-	"github.com/go-errors/errors"
+	"os"
 )
 
 func main() {
 	defer logRecover() // log panic errors
-	public.Public()
+	config.Get()		 // init config, define Set variable
+	public.Public()	 // launch app
 }
 
 func logRecover() {

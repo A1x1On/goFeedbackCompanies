@@ -9,19 +9,17 @@ import(
 	"io/ioutil"
 )
 
-var config *models.ConfigModel
+var Set *models.ConfigModel
 
-func Get() *models.ConfigModel{
+func Get(){
 	jsonFileName  := filepath.Base("config.json")
 	jsonData, err := ioutil.ReadFile(jsonFileName)
 	if err != nil {
 		helper.CheckError(errors.Wrap(err, "error read config file"))
 	}
 
-	err = json.Unmarshal(jsonData, &config)
+	err = json.Unmarshal(jsonData, &Set)
 	if err != nil {
 		helper.CheckError(errors.Wrap(err, "error parse json config file"))
 	}
-
-	return config
 }

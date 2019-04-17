@@ -32,7 +32,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 		parsedRate, err := strconv.ParseFloat(trimAll(text), 64)
 		helper.CheckError(err)
 		if parsedRate != 0 {
-			sumRate    = sumRate + parsedRate
+			sumRate  = sumRate + parsedRate
 			numRate += 1
 		}
 	}
@@ -42,11 +42,11 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 	}
 	setIfGotError := func(iKey int, code int){
 		if code != 0 {
-			errorState     = helper.GetHttpErrorByCode(code)	
+			errorState  = helper.GetHttpErrorByCode(code)	
 		} else if iKey == 0 {
-			html, err 		:= doc.Html()
+			html, err  := doc.Html()
 			helper.CheckError(err)
-			errorState	    = helper.GetHttpErrorByHtml(html)
+			errorState  = helper.GetHttpErrorByHtml(html)
 		}
 	}
 	caseForYelp	  := func(){

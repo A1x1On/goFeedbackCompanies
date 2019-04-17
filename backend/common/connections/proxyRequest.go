@@ -19,9 +19,9 @@ func ProxyRequest(httpType string, urlPath string, params map[string]string) []b
 	var byteParams []byte
 
 	//creating the proxyURL
-	proxyStr 	  := config.Get().Proxy.Adress
+	proxyStr 	  := config.Set.Proxy.Adress
 	proxyURL, err := url.Parse(proxyStr)
-	helper.CheckError(errors.Wrap(err, "Can't (url.Parse) passed val from [config.Get().Proxy.Adress]"))
+	helper.CheckError(errors.Wrap(err, "Can't (url.Parse) passed val from [config.Set.Proxy.Adress]"))
 
 	//creating the URL to be loaded through the proxy
 	urlStr    	  := urlPath
@@ -48,7 +48,7 @@ func ProxyRequest(httpType string, urlPath string, params map[string]string) []b
 	helper.CheckError(errors.Wrap(err, "Can't generate the HTTP request (http.NewRequest)"))
 
 	//adding proxy authentication
-	auth          := config.Get().Proxy.Login + ":" + config.Get().Proxy.Pass
+	auth          := config.Set.Proxy.Login + ":" + config.Set.Proxy.Pass
 	basicAuth     := "Basic " + base64.StdEncoding.EncodeToString([]byte(auth))
 	request.Header.Add("Proxy-Authorization", basicAuth)
 

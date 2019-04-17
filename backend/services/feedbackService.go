@@ -20,7 +20,7 @@ var feedbackRepository interfaces.IFeedbackRepository = &repositories.FeedbackRe
 type FeedbackService struct{}
 
 func (s *FeedbackService) GetAll() string{
-	baseUrl := config.Get().API.BaseURL.Golang
+	baseUrl := config.Set.API.BaseURL.Golang
 	//params := map[string]string{"login" : "2tzEhq13","pass" : "bHXAG7sJ",}
 	response := connections.ProxyRequest("GET",  baseUrl + "x/net/prox", nil)
 	return string(response)
