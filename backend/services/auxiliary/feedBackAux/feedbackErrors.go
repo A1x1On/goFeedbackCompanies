@@ -1,12 +1,19 @@
-package helper
+package feedBackAux
 
 import (
-	"regexp"
+	"gov/backend/common/helper"
 	"gov/backend/models"
+	"regexp"
 	"strconv"
+	"fmt"
 )
 
-var codeErrors = map[int]string{
+
+type pasingErrorInstruction struct {
+
+}
+
+var httpCodes = map[int]string{
 	100 : "Continue",
 	101 : "Switching Protocols",
 	102 : "Processing",
@@ -84,29 +91,56 @@ var codeErrors = map[int]string{
 	526 : "Invalid SSL Certificate",
 }
 
-func GetHttpErrorByHtml(text string) *models.ErrorStateModel{
-	errorState 	 := &models.ErrorStateModel{}
-	for key, val := range codeErrors {
+var parsingCodes = map[int]string{
+	1000 : "Tag has not been Found for the ",
+	1001 : "Switching Protocols",
+	1002 : "Processing",
+}
+
+func setHttpErrorByHtml(text string, errorState *models.ErrorStateModel){
+	for key, val := range httpCodes {
 		matched, err := regexp.MatchString(strconv.Itoa(key), text)
-		CheckError(err)
+		helper.CheckError(err)
 
 		if matched {
-			errorState = &models.ErrorStateModel{Message: val, Code: key}
+			*errorState = models.ErrorStateModel{Message: val, Code: key}
 			break
 		}
 	}
-
-	return errorState
 }
 
-func GetHttpErrorByCode(code int) *models.ErrorStateModel{
-	errorState 	 := &models.ErrorStateModel{}
-	for key, val := range codeErrors {
+func setHttpErrorByCode(code int, errorState *models.ErrorStateModel){
+	for key, val := range httpCodes {
 		if key == code {
-			errorState = &models.ErrorStateModel{Message: val, Code: key}
+			*errorState = models.ErrorStateModel{Message: val, Code: key}
 			break
 		}
 	}
-
-	return errorState
 }
+
+func setParsingErrorByCode(code int, tagType string, errorState *models.ErrorStateModel){
+	fmt.Println("----------code-----------", code)
+
+	for key, val := range parsingCodes {
+		if key == code {
+			*errorState = models.ErrorStateModel{Message: val + tagType, Code: key}
+			break
+		}
+	}
+}
+
+// func pasingErrorAnalyzer(numFound int, tagType string, errorState *models.ErrorStateModel){
+// 	// title = 
+
+// 	fmt.Println("---------numFound------------", numFound)
+
+// 	if numFound == 0 {
+
+// 		switch tagType {
+// 			case "title" : {
+// 				setParsingError(1000, tagType, errorState)
+// 			}
+// 		}
+
+// 	}
+// }

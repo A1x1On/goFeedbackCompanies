@@ -20,9 +20,9 @@ var feedbackRepository interfaces.IFeedbackRepository = &repositories.FeedbackRe
 type FeedbackService struct{}
 
 func (s *FeedbackService) GetAll() string{
-	baseUrl := config.Set.API.BaseURL.Golang
+	
 	//params := map[string]string{"login" : "2tzEhq13","pass" : "bHXAG7sJ",}
-	response := connections.ProxyRequest("GET",  baseUrl + "x/net/prox", nil)
+	response := connections.ProxyRequest("GET",  config.Set.API.BaseURL.Golang + "x/net/prox", nil)
 	return string(response)
 }
 
@@ -32,18 +32,6 @@ func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel)
 	qFeedback.AvarageRate = 0.0
 	averageBy            := 0.0
 	totalFeedback        := len(qFeedback.Services)
-	urlDataSet	         := func(qfeedback *models.FeedbackQueryModel, sFeedback *models.FeedbackServiceModel){		
-		if sFeedback.Title == "apoiMoscow" {
-			if qfeedback.Country == "" || qfeedback.Country == "moscow" {
-				qfeedback.Country = "moskva"
-			}
-		} else if qfeedback.Country == "" {
-			qfeedback.Country = "moscow"
-		}
-
-		sFeedback.Url = regexp.MustCompile("{country}").ReplaceAllString(sFeedback.Url, qfeedback.Country)
-		sFeedback.Url = regexp.MustCompile("{company}").ReplaceAllString(sFeedback.Url, regexp.MustCompile("\\s").ReplaceAllString(qfeedback.Company, "+"))
-	}
 
 	// exec and append ready feedback for each service
 	for _, service := range qFeedback.Services {
@@ -51,11 +39,10 @@ func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel)
 			totalFeedback = totalFeedback - 1
 			continue
 		}
-		
-		urlDataSet(qFeedback, service) // replace templates keys into the data
+		service.Url = getReplacedUrl(qFeedback, service.Url, service.Title) // replace templates keys into the data
+
 		fmt.Println("'" + service.Title + "' is connecting ...", )
-		
-		doc, err := feedbackRepository.GetFeedbackPage(service.Url) // get page of the service
+		doc, err   := feedbackRepository.GetFeedbackPage(service.Url) // get page of the service
 		if err != nil {
 			errorState = &models.ErrorStateModel{
 				Message : err.Error(),
@@ -88,6 +75,20 @@ func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel)
 	}
 
 	return feedBacks
+}
+
+func getReplacedUrl(qfeedback *models.FeedbackQueryModel, url string, title string) string{		
+	if title == "apoiMoscow" {
+		if qfeedback.Country == "" || qfeedback.Country == "moscow" {
+			qfeedback.Country = "moskva"
+		}
+	} else if qfeedback.Country == "" {
+		qfeedback.Country = "moscow"
+	}
+
+	url = regexp.MustCompile("{country}").ReplaceAllString(url, qfeedback.Country)
+	url = regexp.MustCompile("{company}").ReplaceAllString(url, regexp.MustCompile("\\s").ReplaceAllString(qfeedback.Company, "+"))
+	return url
 }
 
 
