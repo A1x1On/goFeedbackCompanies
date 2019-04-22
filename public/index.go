@@ -18,9 +18,9 @@ func Index() {
 	scanner   := bufio.NewScanner(os.Stdin)
 	console   := &models.ConsoleModel{IsQuite: false, Step: 1}
 	qfeedback := &models.FeedbackQueryModel{Services : []*models.FeedbackServiceModel{
-		{Title: "flampRU"         , Url : "https://{country}.flamp.ru/search/{company}"		  			                                           , ISOCode: "RU", CountryCode: 122},
-		{Title: "yellRU"          , Url : "https://www.yell.ru/{country}/top/?text={company}"				                                        , ISOCode: "RU", CountryCode: 122},
-		{Title: "apoiMoscow"      , Url : "https://www.apoi.ru/kompanii/{country}?searchtext={company}"                                         , ISOCode: "RU", CountryCode: 122},
+		{Title: "flampRU"         , Url : "https://moscow.flamp.ru/search/{company}"		  			                                              , ISOCode: "RU", CountryCode: 122},
+		{Title: "yellRU"          , Url : "https://www.yell.ru/moscow/top/?text={company}"				                                           , ISOCode: "RU", CountryCode: 122},
+		{Title: "apoiMoscow"      , Url : "https://www.apoi.ru/kompanii/moskva?searchtext={company}"                                            , ISOCode: "RU", CountryCode: 122},
 		{Title: "pravdaRU"        , Url : "https://pravda-sotrudnikov.ru/search?q={company}"			                                           , ISOCode: "RU", CountryCode: 122},
 		{Title: "spasiboRU"       , Url : "https://spasibovsem.ru/search/?q={company}" 					                                           , ISOCode: "RU", CountryCode: 122},
 
@@ -69,10 +69,8 @@ func showMsg(console *models.ConsoleModel, text string) {
 	case 2:
 		fmt.Println("SET '" + strings.ToUpper(text) + "' ISO Code")	
 		fmt.Println("Enter Company, please: ")
-	case 3:
-		fmt.Println("SET 'RU' ISO Code")	
-		fmt.Println("(option: you can enter 'Country' for strict search)\nEnter Empty line to set All")
 	case 4:
+		fmt.Println("SET 'All' Countries")	
 		fmt.Println("Enter Company, please: ")
 	default:
 		helper.IfError(errors.New("Unknown Step"), "Switch default triggered (showMsg))")
@@ -83,20 +81,12 @@ func execInput(console *models.ConsoleModel, qfeedback *models.FeedbackQueryMode
 	feedBacks := make([]models.FeedbackModel, 0)
 	textKey    = strings.ToUpper(textKey)
 
-	if (textKey== "UA" || textKey == "EU" || textKey == "US") && console.Step == 1 { // if is other zone
+	if (textKey== "UA" || textKey == "EU" || textKey == "US" || textKey == "RU") && console.Step == 1 { // if is other zone
 		qfeedback.ISOCode       = textKey
 		services	              := filterFServiceByISO(qfeedback.Services, qfeedback) // filter/get services by entered ISOCode
 		qfeedback.Services      = services
 		console.Step            = 2
-	} else if textKey == "RU" && console.Step == 1 { // if is RU zone
-		qfeedback.ISOCode       = textKey
-		services               := filterFServiceByISO(qfeedback.Services, qfeedback)
-		qfeedback.Services      = services
-		console.Step 	         = 3
 	} else if console.Step == 1 { // if are All available zones
-		console.Step 	         = 4
-	} else if console.Step == 3 { // if is country
-		qfeedback.Country       = strings.ToLower(textKey)
 		console.Step 	         = 4
 	} else if (console.Step == 4 || console.Step == 2) && textKey != "" { // if is company
 		qfeedback.Company       = strings.ToLower(textKey)

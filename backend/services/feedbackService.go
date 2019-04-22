@@ -27,26 +27,21 @@ func (s *FeedbackService) GetAll() string{
 func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel) []models.FeedbackModel{
 	feedBacks 				:= make([]models.FeedbackModel, 0)
 	errorState 				:= &models.ErrorStateModel{}
-	qFeedback.AvarageRate = 0.0
 	averageBy            := 0.0
 	totalFeedback        := len(qFeedback.Services)
 
 	// exec and append ready feedback for each service
 	for _, service := range qFeedback.Services {
-		if qFeedback.Country != "" && (service.Title == "pravda" || service.Title == "spasibo") {
-			totalFeedback = totalFeedback - 1
-			continue
-		}
-		service.Url = getReplacedUrl(qFeedback, service.Url, service.Title) // replace templates keys into the data
 
 		fmt.Println("'" + service.Title + "' is connecting ...", )
-		doc, err   := feedbackRepository.GetFeedbackPage(service.Url) // get page of the service
+
+		service.Url = getReplacedUrl(qFeedback, service.Url, service.Title) // replace templates keys into the data
+		doc, err   := feedbackRepository.GetFeedbackPage(service.Url)       // get page of the service
 		if err != nil {
 			errorState = &models.ErrorStateModel{
 				Message : err.Error(),
 				Code    : 666,
 			}
-
 			feedBacks = append(feedBacks, models.FeedbackModel{ServiceTitle: service.Title, Rate: 0.0, NumReviews: 0, ErrorState: errorState})
 			continue
 		}
@@ -76,17 +71,7 @@ func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel)
 }
 
 func getReplacedUrl(qfeedback *models.FeedbackQueryModel, url string, title string) string{		
-	if title == "apoiMoscow" {
-		if qfeedback.Country == "" || qfeedback.Country == "moscow" {
-			qfeedback.Country = "moskva"
-		}
-	} else if qfeedback.Country == "" {
-		qfeedback.Country = "moscow"
-	}
-
-	url = regexp.MustCompile("{country}").ReplaceAllString(url, qfeedback.Country)
-	url = regexp.MustCompile("{company}").ReplaceAllString(url, regexp.MustCompile("\\s").ReplaceAllString(qfeedback.Company, "+"))
-	return url
+	return regexp.MustCompile("{company}").ReplaceAllString(url, regexp.MustCompile("\\s").ReplaceAllString(qfeedback.Company, "+"))
 }
 
 

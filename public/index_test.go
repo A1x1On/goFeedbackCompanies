@@ -10,7 +10,7 @@ import (
 func TestExecInput(t *testing.T) {
 	console   := &models.ConsoleModel{IsQuite: false, Step: 1}
 	qfeedback := &models.FeedbackQueryModel{Services : []*models.FeedbackServiceModel{
-		{Title: "flamp", Url : "https://{country}.flamp.ru/search/{company}", ISOCode: "RU", CountryCode: 122},
+		{Title: "flampRU"         , Url : "https://moscow.flamp.ru/search/{company}" , ISOCode: "RU", CountryCode: 122},
 	}}
 
 	qfeedback.ISOCode = "RU"
@@ -38,7 +38,6 @@ func TestExecInput(t *testing.T) {
 	execInput(console, qfeedback, enteredText)
 
 	console.Step 		= 3
-	qfeedback.Country = "moscow"
 	execInput(console, qfeedback, enteredText)
 
 	console.Step 	   = 4
@@ -46,7 +45,6 @@ func TestExecInput(t *testing.T) {
 
 	console.Step 	   = 4
 	qfeedback.ISOCode = "RU"
-	qfeedback.Country = ""
 	execInput(console, qfeedback, enteredText)
 }
 
@@ -57,8 +55,6 @@ func TestShowMsg(t *testing.T) {
 	showMsg(console, enteredText)
 	console.Step = 2
 	showMsg(console, enteredText)
-	console.Step = 3
-	showMsg(console, enteredText)
 	console.Step = 4
 	showMsg(console, enteredText)
 	//console.Step = 5 // obvious error
@@ -67,13 +63,13 @@ func TestShowMsg(t *testing.T) {
 
 func TestFilterFServiceByISO(t *testing.T) {
 	qfeedback    	:= &models.FeedbackQueryModel{ISOCode : "UA", Services : []*models.FeedbackServiceModel{
-		{Title: "flamp"         , Url : "https://{country}.flamp.ru/search/{company}"											     				, ISOCode: "RU", CountryCode: 122},
-		{Title: "yelp"          , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Washington%2C%20DC"    				, ISOCode: "US", CountryCode: 1  },
-		{Title: "yelpPoland"    , Url : "https://www.yelp.com/search?find_desc=kfc&find_loc=Warszawa%2C%20Mazowieckie%2C%20Poland" , ISOCode: "EU", CountryCode: 1  },
-		{Title: "tripadvisorua" , Url : "https://www.tripadvisor.com/Search?geo=294473&pid=3826&q=kfc" 									   , ISOCode: "UA", CountryCode: 380},
+		{Title: "flampRU"         , Url : "https://moscow.flamp.ru/search/{company}"											     				         , ISOCode: "RU", CountryCode: 122},
+		{Title: "yelpWashington"  , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Washington%2C%20DC"   			   	   , ISOCode: "US", CountryCode: 1  },
+		{Title: "yelpPoland"      , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Warszawa%2C%20Mazowieckie%2C%20Poland" 	, ISOCode: "EU", CountryCode: 1  },
+		{Title: "otzyvUA"         , Url : "https://www.otzyvua.net/search/?q={company}" 									   					         , ISOCode: "UA", CountryCode: 380},
 	}}
 	expectedResult := []*models.FeedbackServiceModel{
-		{Title: "tripadvisorua" , Url : "https://www.tripadvisor.com/Search?geo=294473&pid=3826&q=kfc" 									   , ISOCode: "UA", CountryCode: 380},
+		{Title: "otzyvUA"         , Url : "https://www.otzyvua.net/search/?q={company}" 									   					         , ISOCode: "UA", CountryCode: 380},
 	}
 	actualResult	:= filterFServiceByISO(qfeedback.Services, qfeedback)
 	assert.Equal(t, expectedResult, actualResult)
