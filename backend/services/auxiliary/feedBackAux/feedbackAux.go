@@ -3,7 +3,6 @@ package feedBackAux
 import (
 	"github.com/PuerkitoBio/goquery"
 	"gov/backend/common/helper"
-	"github.com/pkg/errors"
 	"gov/backend/models"
 	"math/big"
 	"strconv"
@@ -24,22 +23,22 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 
 	// list of services for parsing
 	switch title {
-		case "flampRU"	   	  : { ParseFlamp(sParams) 				   } // todo add more parsing errors
-		case "yellRU"     	  : { ParseYell(sParams, qFeedback)    } // todo add more parsing errors
+		case "flampRU"	   	  : { ParseFlamp(sParams, errorState)  } // todo add more parsing errors
+		case "yellRU"     	  : { ParseYell(sParams, errorState, qFeedback)    } // todo add more parsing errors
 		case "apoiMoscow" 	  : { ParseApoi(sParams, errorState, qFeedback)    } 
-		case "pravdaRU"   	  : { ParsePravda(sParams, qFeedback)	} // todo add more parsing errors
-		case "spasiboRU"  	  : { ParseSpasibo(sParams, qFeedback) } // todo add more parsing errors
-		case "indeedUS"        : { ParseIndeed(sParams, qFeedback)	} // todo add more parsing errors
-		case "tripadWashington": { ParseTripad(sParams, qFeedback)  } // todo add more parsing errors
-		case "yellowWashington": { ParseYellow(sParams, qFeedback)  } // todo add more parsing errors
-		case "bbbUS"			  : { ParseBBB(sParams, qFeedback)	   } // todo add more parsing errors
-		case "yelpWashington"  : { ParseYelp(sParams, qFeedback)    } // todo add more parsing errors
-		case "yelpPoland"      : { ParseYelp(sParams, qFeedback)    } // todo add more parsing errors
-		case "yelpSpain"       : { ParseYelp(sParams, qFeedback)    } // todo add more parsing errors
-		case "yelpDenmark"     : { ParseYelp(sParams, qFeedback)    } // todo add more parsing errors
-		case "yelpBritan"      : { ParseYelp(sParams, qFeedback)    } // todo add more parsing errors
-		case "yelpNorway"      : { ParseYelp(sParams, qFeedback)    } // todo add more parsing errors
-		case "otzyvUA"	        : { ParseYelp(sParams, qFeedback)    } // todo add more parsing errors
+		case "pravdaRU"   	  : { ParsePravda(sParams, errorState, qFeedback)	} // todo add more parsing errors
+		case "spasiboRU"  	  : { ParseSpasibo(sParams, errorState, qFeedback) } // todo add more parsing errors
+		case "indeedUS"        : { ParseIndeed(sParams, errorState, qFeedback)	} // todo add more parsing errors
+		case "tripadWashington": { ParseTripad(sParams, errorState, qFeedback)  } // todo add more parsing errors
+		case "yellowWashington": { ParseYellow(sParams, errorState, qFeedback)  } // todo add more parsing errors
+		case "bbbUS"			  : { ParseBBB(sParams, errorState, qFeedback)	   } // todo add more parsing errors
+		case "yelpWashington"  : { ParseYelp(sParams, errorState, qFeedback)    } // todo add more parsing errors
+		case "yelpPoland"      : { ParseYelp(sParams, errorState, qFeedback)    } // todo add more parsing errors
+		case "yelpSpain"       : { ParseYelp(sParams, errorState, qFeedback)    } // todo add more parsing errors
+		case "yelpDenmark"     : { ParseYelp(sParams, errorState, qFeedback)    } // todo add more parsing errors
+		case "yelpBritan"      : { ParseYelp(sParams, errorState, qFeedback)    } // todo add more parsing errors
+		case "yelpNorway"      : { ParseYelp(sParams, errorState, qFeedback)    } // todo add more parsing errors
+		case "otzyvUA"	        : { ParseOtzyv(sParams, errorState, qFeedback)    } // todo add more parsing errors
 		default					  : {
 			setHttpErrorByCode(404, errorState)
 			break
@@ -51,7 +50,7 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, t
 		return 0, sParams.numReviews, errorState
 	} else {
 		fixedRate, err	:= strconv.ParseFloat(big.NewFloat(sParams.sumRate/float64(sParams.numRate)).Text('f', 3), 64)
-		helper.CheckError(errors.Wrap(err, "can't (trconv.ParseFloat(big.NewFloat(..) to get [fixedRate]"))
+		helper.IfError(err, "can't (trconv.ParseFloat(big.NewFloat(..) to get [fixedRate]")
 		return fixedRate, sParams.numReviews, errorState
 	}
 }
@@ -66,7 +65,7 @@ func trimAll(text string) string {
 // get Rate
 func foldRate(text string, sParams *serviceParams){
 	parsedRate, err := strconv.ParseFloat(trimAll(text), 64)
-	helper.CheckError(errors.Wrap(err, "can't (strconv.ParseFloat) to get [parsedRate]"))
+	helper.IfError(err, "can't (strconv.ParseFloat) to get [parsedRate]")
 	if parsedRate != 0 {
 		sParams.numRate += 1
 	}
@@ -76,7 +75,7 @@ func foldRate(text string, sParams *serviceParams){
 // get Reviews
 func getSumReviews(reviewsText string, numReviews int) int{
 	reviewsInt, err := strconv.Atoi(reviewsText)
-	helper.CheckError(errors.Wrap(err, "can't (strconv.Atoi) to get [reviewsInt]"))
+	helper.IfError(err, "can't (strconv.Atoi) to get [reviewsInt]")
 	return numReviews + reviewsInt
 }
 // -------------------------------------------------

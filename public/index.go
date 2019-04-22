@@ -59,7 +59,7 @@ func Index() {
 		}
 	}
 
-	helper.CheckError(errors.Wrap(scanner.Err(), "by Enter keyboard key got error (for scanner.Scan()"))
+	helper.IfError(scanner.Err(), "by Enter keyboard key got error (for scanner.Scan()")
 }
 
 func showMsg(console *models.ConsoleModel, text string) {
@@ -75,7 +75,7 @@ func showMsg(console *models.ConsoleModel, text string) {
 	case 4:
 		fmt.Println("Enter Company, please: ")
 	default:
-		helper.CheckError(errors.Wrap(errors.New("Unknown Step"), "Switch default triggered (showMsg))"))
+		helper.IfError(errors.New("Unknown Step"), "Switch default triggered (showMsg))")
 	}
 }
 
@@ -134,9 +134,9 @@ func filterFServiceByISO(services []*models.FeedbackServiceModel, qfeedback *mod
 
 	if len(result) == 0 {
 		if qfeedback.ISOCode == "" {
-			helper.CheckError(errors.Wrap(errors.New("Reslut is empty"), "[result] can't be 0 and [qfeedback.ISOCode] can't be '' (filterFServiceByISO)"))
+			helper.IfError(errors.New("Reslut is empty"), "[result] can't be 0 and [qfeedback.ISOCode] can't be '' (filterFServiceByISO)")
 		} else {
-			helper.CheckError(errors.Wrap(errors.New("Reslut is empty"), "[result] can't be 0 (filterFServiceByISO)"))
+			helper.IfError(errors.New("Reslut is empty"), "[result] can't be 0 (filterFServiceByISO)")
 		}
 	} 
 

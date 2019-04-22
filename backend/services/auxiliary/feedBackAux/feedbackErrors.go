@@ -92,15 +92,15 @@ var httpCodes = map[int]string{
 }
 
 var parsingCodes = map[int]string{
-	1000 : "Tag has not been Found for the ",
-	1001 : "Switching Protocols",
-	1002 : "Processing",
+	1000 : "Such Tag has not been found for ",
+	1001 : "No One grade found for : ",
+	1002 : "Such attribute has not been found for : ",
 }
 
 func setHttpErrorByHtml(text string, errorState *models.ErrorStateModel){
 	for key, val := range httpCodes {
 		matched, err := regexp.MatchString(strconv.Itoa(key), text)
-		helper.CheckError(err)
+		helper.IfErr(err)
 
 		if matched {
 			*errorState = models.ErrorStateModel{Message: val, Code: key}

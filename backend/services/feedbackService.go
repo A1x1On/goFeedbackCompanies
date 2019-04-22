@@ -7,7 +7,6 @@ import (
 	"gov/backend/common/config"
 	"gov/backend/repositories"
 	"gov/backend/interfaces"
-	"github.com/pkg/errors"
 	"gov/backend/models"
 	"math/big"
 	"strconv"
@@ -20,7 +19,6 @@ var feedbackRepository interfaces.IFeedbackRepository = &repositories.FeedbackRe
 type FeedbackService struct{}
 
 func (s *FeedbackService) GetAll() string{
-	
 	//params := map[string]string{"login" : "2tzEhq13","pass" : "bHXAG7sJ",}
 	response := connections.ProxyRequest("GET",  config.Set.API.BaseURL.Golang + "x/net/prox", nil)
 	return string(response)
@@ -70,7 +68,7 @@ func (s *FeedbackService) GetAllByCriteria(qFeedback *models.FeedbackQueryModel)
 	} else {
 		qFeedback.AvarageRate = averageBy/float64(totalFeedback) 
 		fixedRate, err			 := strconv.ParseFloat(big.NewFloat(averageBy/float64(totalFeedback)).Text('f', 3), 64)
-		helper.CheckError(errors.Wrap(err, "can't (strconv.ParseFloat) to get [fixedRate]"))
+		helper.IfError(err, "can't (strconv.ParseFloat) to get [fixedRate]")
 		qFeedback.AvarageRate  = fixedRate
 	}
 

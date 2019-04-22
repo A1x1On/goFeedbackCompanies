@@ -7,16 +7,16 @@ import (
 	"regexp"
 )
 
-func ParseYellow(sParams *serviceParams, qFeedback *models.FeedbackQueryModel){
+func ParseYellow(sParams *serviceParams, errorState *models.ErrorStateModel, qFeedback *models.FeedbackQueryModel){
 	// get HTML
 	html, err 	  := sParams.doc.Html()
-	helper.CheckError(err)
+	helper.IfError(err, "can't (sParams.doc.Html) to get [html]")
 	html 		  		= strings.ToLower(html)
 
 	// get rate & reviews as DOM string array by found companies
 	rateText      := ""
 	valExp, err	  := regexp.Compile(`<div class="result-rating\s\D*\d*\)`)
-	helper.CheckError(err)
+	helper.IfError(err, "can't (regexp.Compile) to get [valExp]")
 	listValue  	  := valExp.FindAllString(html, -1)
 
 	if len(listValue) != 0 {
@@ -24,7 +24,7 @@ func ParseYellow(sParams *serviceParams, qFeedback *models.FeedbackQueryModel){
 	
 			// get/set rate
 			rateExp, err   := regexp.Compile(`one|two|three|four|five`)
-			helper.CheckError(err)
+			helper.IfError(err, "can't (regexp.Compile) to get [rateExp]")
 			rateNumText    := rateExp.FindAllString(val, -1)
 	
 			if len(rateNumText) != 0 {
@@ -40,18 +40,24 @@ func ParseYellow(sParams *serviceParams, qFeedback *models.FeedbackQueryModel){
 					rateText = "5.0"
 				} else {
 					rateText = "0.0"
+					// check if such grade exists
+					setParsingErrorByCode(1001, "rate" , errorState)
+					continue
+					// ------------------------
 				}
 				foldRate(rateText, sParams)
 			}
 	
 			// get/set reviews
 			numExp, err	  := regexp.Compile(`\d*\)`)
-			helper.CheckError(err)
+			helper.IfError(err, "can't (regexp.Compile) to get [numExp]")
 			reviewsText   := numExp.FindAllString(val, -1)
 			if len(reviewsText) != 0 {
 				sParams.numReviews = getSumReviews(reviewsText[0][:1], sParams.numReviews)
 			}
 		}
+	} else {
+		setHttpErrorByHtml(html, errorState)
 	}
 
 }
