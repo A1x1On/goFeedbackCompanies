@@ -9,10 +9,15 @@ import (
 )
 
 func ParseApoi(sParams *serviceParams, errorState *models.ErrorStateModel, qFeedback *models.FeedbackQueryModel){
-	docCount   := 0
+	docFound := sParams.doc.Find("div.w_star")
 
-	sParams.doc.Find("div.w_star").EachWithBreak(func(i int, sel *goquery.Selection) bool {
-		docCount   = i + 1
+	// check found result by entered comapny
+	if docFound.Length() == 0 {
+		setParsingErrorByCode(1005, qFeedback.Company , errorState)
+	}
+	// ------------------------
+
+	docFound.EachWithBreak(func(i int, sel *goquery.Selection) bool {
 		// get/check title
 		titleSel	 := ".m_title > .flw a"
 		titleHtml := sel.Find(titleSel)
@@ -39,7 +44,7 @@ func ParseApoi(sParams *serviceParams, errorState *models.ErrorStateModel, qFeed
 			rateExp, err      := regexp.Compile("[\\d\\.]*")
 			rateText          := rateExp.FindAllString(trimAll(rateHtml.Text()), -1)
 			helper.IfError(err, "can't (rateExp.FindAllString) to get [rateText]")
-			foldRate(rateText[0], sParams)
+			foldRate(rateText[0], sParams, errorState)
 
 			// get/set reviews
 			reviewsSel	      := ".img_p > .numReviews"
@@ -56,11 +61,5 @@ func ParseApoi(sParams *serviceParams, errorState *models.ErrorStateModel, qFeed
 
 		return true
 	})
-
-	// set doc html error
-	if docCount == 0 {
-		html, err  := sParams.doc.Html()
-		helper.IfError(err, "can't (sParams.doc.Html()) to get [html]")
-		setHttpErrorByHtml(html, errorState)
-	}	
+		
 }

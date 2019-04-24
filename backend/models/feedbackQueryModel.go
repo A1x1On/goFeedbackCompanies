@@ -5,5 +5,6 @@ type FeedbackQueryModel struct {
 	ISOCode	    string
 	AvarageRate  float64
 	NumReviews   int
+	ServiceTitle string
 	Services     []*FeedbackServiceModel
 }

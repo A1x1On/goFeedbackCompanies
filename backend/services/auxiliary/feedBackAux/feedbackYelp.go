@@ -9,10 +9,15 @@ import (
 )
 
 func ParseYelp(sParams *serviceParams, errorState *models.ErrorStateModel, qFeedback *models.FeedbackQueryModel){
-	docCount := 0
+	docFound := sParams.doc.Find(".mainAttributes__373c0__1r0QA")
 
-	sParams.doc.Find(".mainAttributes__373c0__1r0QA").EachWithBreak(func(i int, sel *goquery.Selection) bool {
-		docCount = i + 1
+	// check found result by entered comapny
+	if docFound.Length() == 0 {
+		setParsingErrorByCode(1005, qFeedback.Company , errorState)
+	}
+	// ------------------------
+
+	docFound.EachWithBreak(func(i int, sel *goquery.Selection) bool {
 		// get/check title
 		titleSel	 		:= ".heading--h3__373c0__1n4Of > a"
 		titleHtml      := sel.Find(titleSel)
@@ -41,7 +46,7 @@ func ParseYelp(sParams *serviceParams, errorState *models.ErrorStateModel, qFeed
 			helper.IfError(err, "can't (rateExp.Compile) to get [rateExp]")
 			listRate  	  := rateExp.FindAllString(rateText, -1)
 			if len(listRate) != 0 {
-				foldRate(listRate[0], sParams)
+				foldRate(listRate[0], sParams, errorState)
 			}
 		
 			// get/set reviews
@@ -58,15 +63,10 @@ func ParseYelp(sParams *serviceParams, errorState *models.ErrorStateModel, qFeed
 				sParams.numReviews = getSumReviews(reviewsText, sParams.numReviews)
 			}
 			
+		} else {
+
 		}
 
 		return true
 	})
-
-	// set doc html error
-	if docCount == 0 {
-		html, err  := sParams.doc.Html()
-		helper.IfError(err, "can't (sParams.doc.Html()) to get [html]")
-		setHttpErrorByHtml(html, errorState)
-	}
 }

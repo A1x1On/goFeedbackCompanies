@@ -1,17 +1,14 @@
 package feedBackAux
 
 import (
+	"github.com/PuerkitoBio/goquery"
 	"gov/backend/common/helper"
 	"gov/backend/models"
 	"regexp"
 	"strconv"
-	"fmt"
 )
 
-
-type pasingErrorInstruction struct {
-
-}
+type pasingErrorInstruction struct {}
 
 var httpCodes = map[int]string{
 	100 : "Continue",
@@ -95,6 +92,10 @@ var parsingCodes = map[int]string{
 	1000 : "Such Tag has not been found for ",
 	1001 : "No One grade found for : ",
 	1002 : "Such attribute has not been found for : ",
+	1003 : "Value should be (>= 0 && <= 5) float64 type for : ",
+	1004 : "Such company has not been found on the current service : ",
+	1005 : "Such company has not been found on the current service  : ",
+	1006 : "Such Service name has not been found in the project : ",
 }
 
 func setHttpErrorByHtml(text string, errorState *models.ErrorStateModel){
@@ -109,7 +110,7 @@ func setHttpErrorByHtml(text string, errorState *models.ErrorStateModel){
 	}
 }
 
-func setHttpErrorByCode(code int, errorState *models.ErrorStateModel){
+func SetHttpErrorByCode(code int, errorState *models.ErrorStateModel){
 	for key, val := range httpCodes {
 		if key == code {
 			*errorState = models.ErrorStateModel{Message: val, Code: key}
@@ -119,14 +120,34 @@ func setHttpErrorByCode(code int, errorState *models.ErrorStateModel){
 }
 
 func setParsingErrorByCode(code int, tagType string, errorState *models.ErrorStateModel){
-	fmt.Println("----------code-----------", code)
-
 	for key, val := range parsingCodes {
 		if key == code {
 			*errorState = models.ErrorStateModel{Message: val + tagType, Code: key}
 			break
 		}
 	}
+}
+
+func VerifyNotFoundPage(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, errorState *models.ErrorStateModel) int {
+	switch qFeedback.ServiceTitle {
+		case "tripadWashington" : fallthrough
+		case "yellowWashington" : { 
+			docFound := doc.Find("#no-results")
+
+			// check found result by entered comapny
+			if docFound.Length() != 0 {
+				setParsingErrorByCode(1005, qFeedback.Company , errorState)
+				return 0
+			}
+			// ------------------------
+		}
+		default					   : {
+			setParsingErrorByCode(1006, qFeedback.ServiceTitle, errorState)
+			break
+		}
+	}
+
+	return 404
 }
 
 // func pasingErrorAnalyzer(numFound int, tagType string, errorState *models.ErrorStateModel){

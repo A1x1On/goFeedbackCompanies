@@ -2,9 +2,8 @@ package main
 
 import (
 	"gov/backend/common/config"
-	"github.com/go-errors/errors"
+	"github.com/ztrue/tracerr"
 	"gov/public"
-	"fmt"
 	"log"
 	"os"
 )
@@ -16,7 +15,8 @@ func main() {
 }
 
 func logRecover() {
-	if err := recover(); err != nil {
+	template := " ------ \n\n  %v"
+	if err   := recover(); err != nil {
 		// set log file
 		file, er := os.OpenFile("logfile", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
 		if er != nil {
@@ -29,8 +29,9 @@ func logRecover() {
 		log.SetOutput(file)
 
 		// append error into the log
-		log.Println(errors.Wrap(err, 2).ErrorStack())
+		log.Println(tracerr.SprintSource(tracerr.Errorf(template, err)))
+		
 		// show error in the output
-		fmt.Println(errors.Wrap(err, 2).ErrorStack())
+		tracerr.PrintSource(tracerr.Errorf(template, err))
 	}
 }

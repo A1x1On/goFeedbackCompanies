@@ -9,10 +9,15 @@ import (
 )
 
 func ParseIndeed(sParams *serviceParams, errorState *models.ErrorStateModel, qFeedback *models.FeedbackQueryModel){
-	docCount   := 0
+	docFound := sParams.doc.Find(".cmp-CompanyWidget:first-child")
 
-	sParams.doc.Find(".cmp-CompanyWidget:first-child").EachWithBreak(func(i int, sel *goquery.Selection) bool {
-		docCount 		= i + 1
+	// check found result by entered comapny
+	if docFound.Length() == 0 {
+		setParsingErrorByCode(1005, qFeedback.Company , errorState)
+	}
+	// ------------------------
+
+	docFound.EachWithBreak(func(i int, sel *goquery.Selection) bool {
 		// get/check title
 		titleSel	 	  := ".cmp-CompanyWidget-name"
 		titleHtml     := sel.Find(titleSel)
@@ -36,16 +41,10 @@ func ParseIndeed(sParams *serviceParams, errorState *models.ErrorStateModel, qFe
 				return false
 			}
 			// ------------------------
-			foldRate(rateHtml.Text(), sParams)
+			foldRate(rateHtml.Text(), sParams, errorState)
 		}
 
 		return true
 	})
 
-	// set doc html error
-	if docCount == 0 {
-		html, err  := sParams.doc.Html()
-		helper.IfError(err, "can't (sParams.doc.Html()) to get [html]")
-		setHttpErrorByHtml(html, errorState)
-	}
 }

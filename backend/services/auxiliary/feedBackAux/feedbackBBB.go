@@ -37,8 +37,8 @@ func ParseBBB(sParams *serviceParams, errorState *models.ErrorStateModel, qFeedb
 
 		if len(ratingJson) == 0 {
 			err := json.Unmarshal([]byte(ratingJson[0]), &sRating)
-			helper.IfError(err, "can't (json.Unmarshal) to get [sRating = bbbRating{}], maybe Json has been changed")
-	
+			helper.IfError(err, "can't (json.Unmarshal) to get [sRating = bbbRating{}], maybe Json has been changed") // todo, maybe rebuild error as stateError
+
 			// got json result from service document
 			for _, val := range sRating.Search.Results {
 				val.BusinessName = strings.ToLower(val.BusinessName)
@@ -68,12 +68,14 @@ func ParseBBB(sParams *serviceParams, errorState *models.ErrorStateModel, qFeedb
 						continue
 						// ------------------------
 					}
-					foldRate(rateText, sParams)
+					foldRate(rateText, sParams, errorState)
 				}
 			}
+		} else {
+			setParsingErrorByCode(1005, qFeedback.Company , errorState)
 		}
-	
 	} else {
-		setHttpErrorByHtml(html, errorState)
+		setParsingErrorByCode(1005, qFeedback.Company , errorState)
 	}
+
 }

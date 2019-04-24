@@ -5,5 +5,5 @@ import (
 )
 
 type IFeedbackRepository interface {
-	GetFeedbackPage(string) (*goquery.Document, error)
+	GetFeedbackPage(string) (*goquery.Document, int, error)
 }

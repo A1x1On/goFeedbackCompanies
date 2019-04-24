@@ -2,16 +2,19 @@ package feedBackAux
 
 import (
 	"github.com/PuerkitoBio/goquery"
-	"gov/backend/common/helper"
 	"gov/backend/models"
 )
 
-func ParseFlamp(sParams *serviceParams, errorState *models.ErrorStateModel){
-	docCount := 0
+func ParseFlamp(sParams *serviceParams, errorState *models.ErrorStateModel, qFeedback *models.FeedbackQueryModel){
+	docFound := sParams.doc.Find("cat-brand-filial-rating")
 
-	sParams.doc.Find("cat-brand-filial-rating").EachWithBreak(func(i int, sel *goquery.Selection) bool {
-		docCount 	  = i + 1
+	// check found result by entered comapny
+	if docFound.Length() == 0 {
+		setParsingErrorByCode(1005, qFeedback.Company , errorState)
+	}
+	// ------------------------
 
+	docFound.EachWithBreak(func(i int, sel *goquery.Selection) bool {
 		// get/set rate
 		rateText, ok := sel.Attr("rating")
 		// check if rate tag exists
@@ -20,7 +23,7 @@ func ParseFlamp(sParams *serviceParams, errorState *models.ErrorStateModel){
 			return false
 		}
 		// ------------------------
-		foldRate(rateText, sParams)
+		foldRate(rateText, sParams, errorState)
 
 		// get/set reviews
 		reviewsText, ok    := sel.Attr("reviews-count")
@@ -35,10 +38,4 @@ func ParseFlamp(sParams *serviceParams, errorState *models.ErrorStateModel){
 		return true
 	})
 
-	// set doc html error
-	if docCount == 0 {
-		html, err  := sParams.doc.Html()
-		helper.IfError(err, "can't (sParams.doc.Html()) to get [html]")
-		setHttpErrorByHtml(html, errorState)
-	}
 }

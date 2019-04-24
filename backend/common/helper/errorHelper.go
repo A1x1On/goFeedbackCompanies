@@ -16,9 +16,8 @@ func IfError(err error, msg string) {
 	}
 }
 
-// func TError(err errorm i interface{}, msg string) {
+// func TError(err error, i interface{}, msg string) {
 // 	if err != nil {
-
 // 	switch v := r.(type) {
 // 		case ParseJson:
 // 			fmt.Println("Stringer:", v)

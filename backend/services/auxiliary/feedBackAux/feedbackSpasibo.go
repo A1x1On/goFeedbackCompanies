@@ -9,11 +9,15 @@ import (
 )
 
 func ParseSpasibo(sParams *serviceParams, errorState *models.ErrorStateModel, qFeedback *models.FeedbackQueryModel){
-	docCount := 0
+	docFound := sParams.doc.Find("table.items tbody tr")
 
-	sParams.doc.Find("table.items tbody tr").EachWithBreak(func(i int, sel *goquery.Selection) bool {
-		docCount = i + 1
+	// check found result by entered comapny
+	if docFound.Length() == 0 {
+		setParsingErrorByCode(1005, qFeedback.Company , errorState)
+	}
+	// ------------------------
 
+	docFound.EachWithBreak(func(i int, sel *goquery.Selection) bool {
 		// get/check title
 		titleSel	 := ".left"
 		titleHtml := sel.Find(titleSel)
@@ -45,7 +49,7 @@ func ParseSpasibo(sParams *serviceParams, errorState *models.ErrorStateModel, qF
 				return false
 			}
 			// ------------------------
-			foldRate(rateText, sParams)
+			foldRate(rateText, sParams, errorState)
 
 			// get/set reviews
 			reviewsSel	      := "td.num"
@@ -62,10 +66,4 @@ func ParseSpasibo(sParams *serviceParams, errorState *models.ErrorStateModel, qF
 		return true
 	})
 
-	// set doc html error
-	if docCount == 0 {
-		html, err  := sParams.doc.Html()
-		helper.IfError(err, "can't (sParams.doc.Html()) to get [html]")
-		setHttpErrorByHtml(html, errorState)
-	}
 }
