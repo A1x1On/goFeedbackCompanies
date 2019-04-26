@@ -21,8 +21,8 @@ func ParseService(doc *goquery.Document, qFeedback *models.FeedbackQueryModel, e
 	sParams := &serviceParams{doc: doc}
 
 	// list of services for parsing
-	switch qFeedback.ServiceTitle {
-		case "flampRU"	   	  : { ParseFlamp(sParams, errorState, qFeedback)  				} 
+	switch qFeedback.Service.Title {
+		case "flampRU"	   	  : { ParseFlamp(sParams, errorState, qFeedback)  	} 
 		case "yellRU"     	  : { ParseYell(sParams, errorState, qFeedback)    } 
 		case "apoiMoscow" 	  : { ParseApoi(sParams, errorState, qFeedback)    } 
 		case "pravdaRU"   	  : { ParsePravda(sParams, errorState, qFeedback)	}

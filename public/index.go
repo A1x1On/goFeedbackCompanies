@@ -6,7 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"gov/backend/services"
 	"gov/backend/models"
-	"strings"
+	"strconv"
 	"bufio"
 	"fmt"
 	"os"
@@ -17,30 +17,6 @@ var feedbackService interfaces.IFeedbackService = &services.FeedbackService{}
 func Index() {
 	scanner   := bufio.NewScanner(os.Stdin)
 	console   := &models.ConsoleModel{IsQuite: false, Step: 1}
-	qfeedback := &models.FeedbackQueryModel{Services : []*models.FeedbackServiceModel{
-		{Title: "flampRU"         , Url : "https://moscow.flamp.ru/search/{company}"		  			                                              , ISOCode: "RU", CountryCode: 122},
-		{Title: "yellRU"          , Url : "https://www.yell.ru/moscow/top/?text={company}"				                                           , ISOCode: "RU", CountryCode: 122},
-		{Title: "apoiMoscow"      , Url : "https://www.apoi.ru/kompanii/moskva?searchtext={company}"                                            , ISOCode: "RU", CountryCode: 122},
-		{Title: "pravdaRU"        , Url : "https://pravda-sotrudnikov.ru/search?q={company}"			                                           , ISOCode: "RU", CountryCode: 122},
-		{Title: "spasiboRU"       , Url : "https://spasibovsem.ru/search/?q={company}" 					                                           , ISOCode: "RU", CountryCode: 122},
-
-		{Title: "indeedUS"        , Url : "https://www.indeed.com/cmp?q={company}&l=&from=discovery-cmp-search"     					    	 		 , ISOCode: "US", CountryCode: 1  },
-		{Title: "yelpWashington"  , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Washington%2C%20DC"   			   	 		 , ISOCode: "US", CountryCode: 1  },
-		{Title: "tripadWashington", Url : "https://www.yellowpages.com/search?search_terms={company}&geo_location_terms=Washington%2C+DC" 		 , ISOCode: "US", CountryCode: 1  },
-		{Title: "bbbUS"           , Url : "https://www.bbb.org/search?filter_ratings=F&find_country=USA&find_text={company}&page=1&sort=Rating" , ISOCode: "US", CountryCode: 1  },
-		{Title: "yellowWashington", Url : "https://www.yellowpages.com/search?search_terms={company}&geo_location_terms=Washington%2C+DC"		 , ISOCode: "US", CountryCode: 1  },
-
-		{Title: "yelpBritan"      , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=United%20Kingdom%20London" 		  				 , ISOCode: "EU", CountryCode: 1  },
-		{Title: "yelpNorway"      , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Norway%20Oslo" 		  							    , ISOCode: "EU", CountryCode: 1  },
-		{Title: "yelpPoland"      , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Warszawa%2C%20Mazowieckie%2C%20Poland" 	    , ISOCode: "EU", CountryCode: 1  },
-		{Title: "yelpSpain"       , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Madrid%2C%20Spain" 		  					    , ISOCode: "EU", CountryCode: 1  },
-		{Title: "yelpDenmark"     , Url : "https://www.yelp.com/search?find_desc={company}&find_loc=Denmark%20Copenhagen"         				    , ISOCode: "EU", CountryCode: 1  },
-
-		{Title: "otzyvUA"         , Url : "https://www.otzyvua.net/search/?q={company}" 									   					       		 , ISOCode: "UA", CountryCode: 380},
-	}}
-
-	response := feedbackService.GetAll()
-	fmt.Println("response", response)
 
 	showMsg(console, "") // display first text instruction into the console
 	
@@ -49,7 +25,7 @@ func Index() {
 		switch scanner.Text() {
 			case "quite" : console.IsQuite = true
 			case "q"	 	 : console.IsQuite = true
-			default	    : execInput(console, qfeedback, scanner.Text()) // pick the appropriate console step in the condition blocks
+			default	    : execute(console, scanner.Text()) // pick the appropriate console step in the condition blocks
 		}
 		
 		if console.IsQuite { // if IsQuite == true do console exit
@@ -64,71 +40,37 @@ func Index() {
 
 func showMsg(console *models.ConsoleModel, text string) {
 	switch console.Step {
-	case 1:
-		fmt.Println("-----------------------\n|FEEDBACK APP IS READY|\n-----------------------\nEnter ISO Codes, please:\n(option: you can enter 'RU', 'UA', 'EU' or 'US' for strict ISO Code search)\nEnter Empty line to set All")
+	case 1: {
+		temp := "1 - 'flampRU', 2 - 'yellRU', 3 - 'apoiMoscow', 4 - 'pravdaRU', 5 - 'spasiboRU'\n6 - 'indeedUS', 7 - 'yelpWashington', 8 - 'tripadWashington', 9 - 'bbbUS', 10 - 'yellowWashington'\n11 - 'yelpBritan', 12 - 'yelpNorway', 13 - 'yelpPoland', 14 - 'yelpSpain', 15 - 'yelpDenmark'\n16 - 'otzyvUA'"
+		fmt.Println("-----------------------\n|FEEDBACK APP IS READY|\n-----------------------\nEnter Service Id, please:\nYou can enter: \n" + temp)
+	}
 	case 2:
-		fmt.Println("SET '" + strings.ToUpper(text) + "' ISO Code")	
-		fmt.Println("Enter Company, please: ")
-	case 4:
-		fmt.Println("SET 'All' Countries")	
+		fmt.Println("Service Id '" + text)	
 		fmt.Println("Enter Company, please: ")
 	default:
 		helper.IfError(errors.New("Unknown Step"), "Switch default triggered (showMsg))")
 	}
 }
 
-func execInput(console *models.ConsoleModel, qfeedback *models.FeedbackQueryModel, textKey string) {
-	feedBacks := make([]models.FeedbackModel, 0)
-	textKey    = strings.ToUpper(textKey)
-
-	if (textKey== "UA" || textKey == "EU" || textKey == "US" || textKey == "RU") && console.Step == 1 { // if is other zone
-		qfeedback.ISOCode       = textKey
-		services	              := filterFServiceByISO(qfeedback.Services, qfeedback) // filter/get services by entered ISOCode
-		qfeedback.Services      = services
-		console.Step            = 2
-	} else if console.Step == 1 { // if are All available zones
-		console.Step 	         = 4
-	} else if (console.Step == 4 || console.Step == 2) && textKey != "" { // if is company
-		qfeedback.Company       = strings.ToLower(textKey)
-		
-		// Set Average Rate & Count of Reviews for All services
-		// Get Struct Array about Found feedback services
-		feedBacks = feedbackService.GetAllByCriteria(qfeedback)
-		// ----------------------------------------------------
+func execute(console *models.ConsoleModel, textKey string) {
+	if console.Step == 1 { 
+		id, err := strconv.Atoi(textKey)
+		helper.IfError(err, "can't (strconv.Itoa(textKey)) into [id]")
+		console.ServiceId = id
+		console.Step 		= 2
+	} else if console.Step == 2 { // if are All available zones
+		feedback, errorCode, errorMsg := feedbackService.GetReviewService(&models.FeedbcakParamsModel{
+			Company   : textKey,
+			ServiceId : console.ServiceId,
+		})
 
 		fmt.Println("============== Feedbacks have been prepared =================")
-		for _, feedback := range feedBacks {
-			fmt.Println("-------------------------------------")
-			fmt.Println("Service Title: "             , feedback.ServiceTitle)
-			fmt.Println("Average Rate: "              , feedback.Rate)
-			fmt.Println("Review Count: "              , feedback.NumReviews)
-			fmt.Println("State of Result [MESSAGE]: " , feedback.ErrorState.Message)
-			fmt.Println("State of Result [CODE]: "		, feedback.ErrorState.Code)
-		}
-
-		fmt.Println("========== In Total of the Services ================")
-		fmt.Println("Average Rate: "					   , qfeedback.AvarageRate)
-		fmt.Println("Review Count: "					   , qfeedback.NumReviews)
-
+		fmt.Println("----------feedback-----------", feedback)
+		fmt.Println("---------errorCode------------", errorCode)
+		fmt.Println("---------errorMsg------------", errorMsg)
+	
 		console.IsQuite = true // console exit
+	} else {
+		console.Step 	         = 10
 	}
-}
-
-func filterFServiceByISO(services []*models.FeedbackServiceModel, qfeedback *models.FeedbackQueryModel) []*models.FeedbackServiceModel {
-	result 	  := make([]*models.FeedbackServiceModel, 0, len(services))
-	for _, val := range services {
-		 if val.ISOCode == qfeedback.ISOCode {
-			result = append(result, val)
-		 }
-	}
-
-	if len(result) == 0 {
-		if qfeedback.ISOCode == "" {
-			helper.IfError(errors.New("Reslut is empty"), "[result] can't be 0 and [qfeedback.ISOCode] can't be '' (filterFServiceByISO)")
-		} else {
-			helper.IfError(errors.New("Reslut is empty"), "[result] can't be 0 (filterFServiceByISO)")
-		}
-	} 
-
-	return result
 }

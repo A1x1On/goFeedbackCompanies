@@ -7,4 +7,5 @@ type FeedbackQueryModel struct {
 	NumReviews   int
 	ServiceTitle string
 	Services     []*FeedbackServiceModel
+	Service      FeedbackServiceModel
 }
