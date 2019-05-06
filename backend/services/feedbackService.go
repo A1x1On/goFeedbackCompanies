@@ -49,7 +49,7 @@ var services = []models.FeedbackServiceModel{
 func (s *FeedbackService) GetReviewService(feedbackParams *models.FeedbcakParamsModel) (models.FeedbackModel, int, string) {
 	qFeedback  := &models.FeedbackQueryModel{Company : feedbackParams.Company,}
 	for _, val := range services {
-		if val.Id == feedbackParams.ServiceId { //feedbackParams.ServiceId
+		if val.Id == feedbackParams.ServiceId {
 			qFeedback.Service = val
 			continue
 		} 

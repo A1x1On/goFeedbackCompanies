@@ -62,6 +62,11 @@ func execute(console *models.ConsoleModel, textKey string) {
 		feedback, errorCode, errorMsg := feedbackService.GetReviewService(&models.FeedbcakParamsModel{
 			Company   : textKey,
 			ServiceId : console.ServiceId,
+			Proxy		 : models.ProxyModel{
+				Adress  : "socks://146.185.209.252:3430",
+				Login   : "2tzEhq13",
+				Pass    : "bHXAG7sJ",
+			},
 		})
 
 		fmt.Println("============== Feedbacks have been prepared =================")
